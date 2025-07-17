@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FarmWiseHeader } from './FarmWiseHeader';
+import { AgrowHeader } from './AgrowHeader';
 import { MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 
 interface RegionSelectionProps {
@@ -28,7 +28,7 @@ export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <FarmWiseHeader />
+      <AgrowHeader />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">

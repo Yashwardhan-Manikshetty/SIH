@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { FarmWiseHeader } from './FarmWiseHeader';
+import { AgrowHeader } from './AgrowHeader';
 import { 
   ArrowLeft, 
   Send, 
@@ -33,7 +33,7 @@ export const ChatbotPage = ({ onNavigate }: ChatbotPageProps) => {
     {
       id: '1',
       sender: 'bot',
-      content: 'Hello! I\'m your FarmWise AI assistant. I can help you with crop recommendations, weather insights, disease identification, and farming best practices. How can I assist you today?',
+      content: 'Hello! I\'m your Agrow AI assistant. I can help you with crop recommendations, weather insights, disease identification, and farming best practices. How can I assist you today?',
       timestamp: new Date(),
       suggestions: [
         'Best crops for current season',
@@ -124,7 +124,7 @@ export const ChatbotPage = ({ onNavigate }: ChatbotPageProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth flex flex-col">
-      <FarmWiseHeader 
+      <AgrowHeader 
         showLanguageSelector={true}
         showDarkMode={true}
       />
@@ -145,7 +145,7 @@ export const ChatbotPage = ({ onNavigate }: ChatbotPageProps) => {
               <Bot className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">FarmWise AI Assistant</h1>
+              <h1 className="text-2xl font-bold text-foreground">Agrow AI Assistant</h1>
               <p className="text-muted-foreground">Get instant farming advice and insights</p>
             </div>
           </div>

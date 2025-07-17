@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sun, Moon, Mic, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-interface FarmWiseHeaderProps {
+interface AgrowHeaderProps {
   showLanguageSelector?: boolean;
   showVoiceAssistant?: boolean;
   showDarkMode?: boolean;
@@ -12,13 +12,13 @@ interface FarmWiseHeaderProps {
   onMenuClick?: () => void;
 }
 
-export const FarmWiseHeader = ({ 
+export const AgrowHeader = ({ 
   showLanguageSelector = true, 
   showVoiceAssistant = false,
   showDarkMode = false,
   showMenu = false,
   onMenuClick
-}: FarmWiseHeaderProps) => {
+}: AgrowHeaderProps) => {
   const [language, setLanguage] = useState('en');
   const { theme, setTheme } = useTheme();
 
@@ -44,10 +44,10 @@ export const FarmWiseHeader = ({
             )}
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary-foreground rounded-full flex items-center justify-center">
-                <span className="text-primary font-bold text-lg">F</span>
+                <span className="text-primary font-bold text-lg">A</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-primary-foreground">FarmWise AI</h1>
+                <h1 className="text-xl font-bold text-primary-foreground">Agrow AI</h1>
                 <p className="text-xs text-primary-foreground/80 hidden sm:block">
                   AI-powered Smart Farming for Maharashtra Farmers
                 </p>

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FarmWiseHeader } from './FarmWiseHeader';
+import { AgrowHeader } from './AgrowHeader';
 import { 
   CloudRain, 
   Thermometer, 
@@ -89,7 +89,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <FarmWiseHeader 
+      <AgrowHeader 
         showLanguageSelector={true}
         showVoiceAssistant={true}
         showDarkMode={true}

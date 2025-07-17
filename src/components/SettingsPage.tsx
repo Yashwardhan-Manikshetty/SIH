@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { FarmWiseHeader } from './FarmWiseHeader';
+import { AgrowHeader } from './AgrowHeader';
 import { 
   ArrowLeft, 
   Globe, 
@@ -59,7 +59,7 @@ export const SettingsPage = ({ onNavigate }: SettingsPageProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <FarmWiseHeader 
+      <AgrowHeader 
         showLanguageSelector={true}
         showDarkMode={true}
       />
@@ -78,7 +78,7 @@ export const SettingsPage = ({ onNavigate }: SettingsPageProps) => {
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-              <p className="text-muted-foreground">Customize your FarmWise AI experience</p>
+              <p className="text-muted-foreground">Customize your Agrow AI experience</p>
             </div>
           </div>
           
@@ -310,7 +310,7 @@ export const SettingsPage = ({ onNavigate }: SettingsPageProps) => {
                 <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <Leaf className="h-8 w-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">FarmWise AI</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">Agrow AI</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Version 1.0.0 • AI-powered Smart Farming for Maharashtra
                 </p>

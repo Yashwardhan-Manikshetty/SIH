@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FarmWiseHeader } from './FarmWiseHeader';
+import { AgrowHeader } from './AgrowHeader';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 
 interface CropSelectionProps {
@@ -58,7 +58,7 @@ export const CropSelection = ({ onCropsSelected }: CropSelectionProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <FarmWiseHeader />
+      <AgrowHeader />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">

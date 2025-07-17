@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { FarmWiseHeader } from './FarmWiseHeader';
+import { AgrowHeader } from './AgrowHeader';
 import { 
   CloudRain, 
   Leaf, 
@@ -20,7 +20,7 @@ interface LandingPageProps {
 export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <FarmWiseHeader />
+      <AgrowHeader />
       
       {/* Hero Section */}
       <section className="relative py-20 lg:py-32 overflow-hidden">
@@ -75,7 +75,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Why Choose FarmWise AI?
+              Why Choose Agrow AI?
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Comprehensive AI-powered farming solutions designed specifically for Maharashtra's diverse agricultural landscape.
@@ -191,7 +191,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-primary-foreground mb-4">FarmWise AI</h3>
+              <h3 className="text-lg font-semibold text-primary-foreground mb-4">Agrow AI</h3>
               <p className="text-primary-foreground/80">
                 Empowering Maharashtra farmers with AI-driven agricultural insights.
               </p>
@@ -215,7 +215,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
             <div>
               <h4 className="font-semibold text-primary-foreground mb-4">Contact</h4>
               <ul className="space-y-2">
-                <li className="text-primary-foreground/80">Email: support@farmwise.ai</li>
+                <li className="text-primary-foreground/80">Email: support@agrow.ai</li>
                 <li className="text-primary-foreground/80">Phone: +91 12345 67890</li>
                 <li className="text-primary-foreground/80">Address: Pune, Maharashtra</li>
               </ul>
@@ -223,7 +223,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
           </div>
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
             <p className="text-primary-foreground/80">
-              © 2024 FarmWise AI. All rights reserved.
+              © 2024 Agrow AI. All rights reserved.
             </p>
           </div>
         </div>
