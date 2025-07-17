@@ -1,13 +1,116 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { LandingPage } from '../components/LandingPage';
+import { RegionSelection } from '../components/RegionSelection';
+import { CropSelection } from '../components/CropSelection';
+import { MainDashboard } from '../components/MainDashboard';
+import { DiseaseDetection } from '../components/DiseaseDetection';
+import { ChatbotPage } from '../components/ChatbotPage';
+import { SettingsPage } from '../components/SettingsPage';
+import { ThemeProvider } from '../components/ThemeProvider';
 
 const Index = () => {
+  const [currentPage, setCurrentPage] = useState('landing');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
+
+  const handlePageNavigation = (page: string) => {
+    setCurrentPage(page);
+  };
+
+  const handleRegionSelection = (district: string) => {
+    setSelectedDistrict(district);
+    setCurrentPage('crop-selection');
+  };
+
+  const handleCropSelection = (crops: string[]) => {
+    setSelectedCrops(crops);
+    setCurrentPage('dashboard');
+  };
+
+  const handleGetStarted = () => {
+    setCurrentPage('region-selection');
+  };
+
+  const handleLearnMore = () => {
+    // Could navigate to an about page or show more info
+    console.log('Learn more clicked');
+  };
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'landing':
+        return (
+          <LandingPage 
+            onGetStarted={handleGetStarted}
+            onLearnMore={handleLearnMore}
+          />
+        );
+      
+      case 'region-selection':
+        return (
+          <RegionSelection 
+            onRegionSelected={handleRegionSelection}
+          />
+        );
+      
+      case 'crop-selection':
+        return (
+          <CropSelection 
+            onCropsSelected={handleCropSelection}
+          />
+        );
+      
+      case 'dashboard':
+        return (
+          <MainDashboard 
+            selectedDistrict={selectedDistrict}
+            selectedCrops={selectedCrops}
+            onNavigate={handlePageNavigation}
+          />
+        );
+      
+      case 'disease-detection':
+        return (
+          <DiseaseDetection 
+            onNavigate={handlePageNavigation}
+          />
+        );
+      
+      case 'chatbot':
+        return (
+          <ChatbotPage 
+            onNavigate={handlePageNavigation}
+          />
+        );
+      
+      case 'settings':
+        return (
+          <SettingsPage 
+            onNavigate={handlePageNavigation}
+          />
+        );
+      
+      default:
+        return (
+          <LandingPage 
+            onGetStarted={handleGetStarted}
+            onLearnMore={handleLearnMore}
+          />
+        );
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
+      <div className="min-h-screen">
+        {renderCurrentPage()}
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

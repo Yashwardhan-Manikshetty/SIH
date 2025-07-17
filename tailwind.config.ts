@@ -61,7 +61,37 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// FarmWise custom colors
+				earth: {
+					DEFAULT: 'hsl(var(--earth-brown))',
+					brown: 'hsl(var(--earth-brown))'
+				},
+				sky: {
+					DEFAULT: 'hsl(var(--sky-blue))',
+					blue: 'hsl(var(--sky-blue))'
+				},
+				harvest: {
+					DEFAULT: 'hsl(var(--harvest-gold))',
+					gold: 'hsl(var(--harvest-gold))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning-orange))',
+					orange: 'hsl(var(--warning-orange))'
+				},
+				success: {
+					DEFAULT: 'hsl(var(--success-green))',
+					green: 'hsl(var(--success-green))'
 				}
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-earth': 'var(--gradient-earth)',
+				'gradient-sky': 'var(--gradient-sky)'
+			},
+			boxShadow: {
+				'card': 'var(--shadow-card)',
+				'elevated': 'var(--shadow-elevated)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
