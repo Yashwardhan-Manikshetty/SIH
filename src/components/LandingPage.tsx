@@ -15,9 +15,10 @@ import {
 interface LandingPageProps {
   onGetStarted: () => void;
   onLearnMore: () => void;
+  onNavigate: (page: string) => void;
 }
 
-export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => {
+export const LandingPage = ({ onGetStarted, onLearnMore, onNavigate }: LandingPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-earth">
       <AgrowHeader />
@@ -82,40 +83,38 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {[
               {
                 icon: CloudRain,
                 title: "Weather Intelligence",
-                description: "7-day forecasts with monsoon predictions and climate insights"
+                description: "7-day forecasts with monsoon predictions and climate insights",
+                action: "dashboard"
               },
               {
                 icon: Leaf,
                 title: "Crop Recommendations",
-                description: "AI-powered suggestions for optimal crop selection based on your region"
+                description: "AI-powered suggestions for optimal crop selection based on your region",
+                action: "dashboard"
               },
               {
                 icon: Shield,
                 title: "Disease Detection",
-                description: "Early identification of crop diseases with treatment recommendations"
+                description: "Early identification of crop diseases with treatment recommendations",
+                action: "disease-detection"
               },
               {
                 icon: TrendingUp,
                 title: "Yield Optimization",
-                description: "Maximize your harvest with data-driven farming strategies"
-              },
-              {
-                icon: Smartphone,
-                title: "Mobile Friendly",
-                description: "Access insights anywhere, even with limited internet connectivity"
-              },
-              {
-                icon: Globe,
-                title: "Local Language Support",
-                description: "Available in Marathi, Hindi, and English for better accessibility"
+                description: "Maximize your harvest with data-driven farming strategies",
+                action: "dashboard"
               }
             ].map((feature, index) => (
-              <Card key={index} className="hover:shadow-elevated transition-shadow duration-300">
+              <Card 
+                key={index} 
+                className="hover:shadow-elevated transition-shadow duration-300 cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => onNavigate(feature.action)}
+              >
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                     <feature.icon className="h-6 w-6 text-primary" />
@@ -137,12 +136,14 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
                 Trusted by Farmers Across Maharashtra
               </h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                Mobile-friendly platform with multilingual support in Marathi, Hindi, and English for better accessibility.
+              </p>
               <div className="space-y-4">
                 {[
                   "Increase crop yields by up to 30%",
                   "Reduce farming risks with AI predictions",
                   "Save time with automated recommendations",
-                  "Get support in your preferred language",
                   "Access expert advice 24/7"
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
