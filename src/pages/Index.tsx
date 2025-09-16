@@ -43,7 +43,6 @@ const Index = () => {
           <LandingPage 
             onGetStarted={handleGetStarted}
             onLearnMore={handleLearnMore}
-            onNavigate={handlePageNavigation}
           />
         );
       
@@ -96,7 +95,6 @@ const Index = () => {
           <LandingPage 
             onGetStarted={handleGetStarted}
             onLearnMore={handleLearnMore}
-            onNavigate={handlePageNavigation}
           />
         );
     }
