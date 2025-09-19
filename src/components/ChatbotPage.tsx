@@ -12,7 +12,7 @@ const ChatbotPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const chatWindowRef = useRef<HTMLDivElement | null>(null);
 
-  const OPENAI_KEY = import.meta.env.OPENAI_API_KEY;
+  const OPENAI_KEY = import.meta.env.VITE_OPENAI_API_KEY;
   const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
   const pushMessage = (m: Message) => {
