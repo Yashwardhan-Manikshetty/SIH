@@ -72,17 +72,24 @@ export const CropSelection = ({ onCropsSelected }: CropSelectionProps) => {
 
         {/* Selected Crops Summary */}
         {selectedCrops.length > 0 && (
-          <Card className="mb-8 bg-success/5 border-success/20">
+          <Card 
+            className="mb-8 border border-success/20" 
+            style={{ backgroundColor: '#ADC178' }} // custom olive green background
+          >
             <CardContent className="p-6">
               <div className="flex items-center mb-4">
-                <CheckCircle className="h-5 w-5 text-success mr-2" />
-                <span className="font-medium text-success">
+                <CheckCircle className="h-5 w-5 text-black mr-2" /> 
+                <span className="font-medium text-black">
                   {selectedCrops.length} crop{selectedCrops.length > 1 ? 's' : ''} selected
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {selectedCrops.map(crop => (
-                  <Badge key={crop} variant="secondary" className="text-sm px-3 py-1">
+                  <Badge 
+                    key={crop} 
+                    variant="secondary" 
+                    className="text-sm px-3 py-1 bg-white text-black"
+                  >
                     {crop}
                   </Badge>
                 ))}
@@ -98,10 +105,10 @@ export const CropSelection = ({ onCropsSelected }: CropSelectionProps) => {
             return (
               <Card 
                 key={crop.name}
-                className={`cursor-pointer transition-all duration-300 hover:shadow-elevated ${
+                className={`cursor-pointer transition-all duration-300 bg-white hover:shadow-elevated ${
                   isSelected 
                     ? 'ring-2 ring-primary bg-primary/5 shadow-elevated' 
-                    : 'hover:bg-accent/5'
+                    : ''
                 }`}
                 onClick={() => toggleCrop(crop.name)}
               >
@@ -128,11 +135,11 @@ export const CropSelection = ({ onCropsSelected }: CropSelectionProps) => {
             <h3 className="text-lg font-semibold text-foreground mb-4">Growing Seasons</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { season: 'Kharif', description: 'Monsoon season (Jun-Oct)', color: 'success' },
-                { season: 'Rabi', description: 'Winter season (Nov-Apr)', color: 'harvest' },
-                { season: 'Annual', description: 'Year-round cultivation', color: 'sky' },
-                { season: 'Perennial', description: 'Multi-year crops', color: 'primary' }
-              ].map(({ season, description, color }) => (
+                { season: 'Kharif', description: 'Monsoon season (Jun-Oct)' },
+                { season: 'Rabi', description: 'Winter season (Nov-Apr)' },
+                { season: 'Annual', description: 'Year-round cultivation' },
+                { season: 'Perennial', description: 'Multi-year crops' }
+              ].map(({ season, description }) => (
                 <div key={season} className="text-center">
                   <Badge className={`mb-2 ${getSeasonColor(season)}`}>
                     {season}
