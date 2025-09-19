@@ -281,7 +281,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Shield className="mr-2 h-5 w-5 text-warning" />
-                Disease Risk Alerts
+                Diseases
               </CardTitle>
             </CardHeader>
             <CardContent>
