@@ -8,9 +8,10 @@ import * as React from "react";
 
 interface RegionSelectionProps {
   onRegionSelected: (district: string) => void;
+  onNavigate: (path: string) => void; // added navigation prop
 }
 
-export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
+export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectionProps) => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
 
   const districts = [
@@ -27,8 +28,8 @@ export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
   return (
     <div className="min-h-screen bg-gradient-earth">
       <AgrowHeader />
-      
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
             Select Your Region
@@ -38,8 +39,9 @@ export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* District Selection */}
+        {/* Grid for 3 cards */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* District Selection Card */}
           <Card className="shadow-elevated">
             <CardContent className="p-8">
               <div className="flex items-center mb-6">
@@ -95,11 +97,11 @@ export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
             </CardContent>
           </Card>
 
-          {/* Maharashtra Map Visualization */}
+          {/* Maharashtra Map Card */}
           <Card className="shadow-elevated">
             <CardContent className="p-8">
               <h2 className="text-2xl font-semibold text-foreground mb-6">Maharashtra Map</h2>
-              
+   
               {/* Image-based Maharashtra Map */}
               <div className="aspect-square rounded-2xl overflow-hidden">
                 <img
@@ -116,7 +118,6 @@ export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
                 {selectedDistrict ? `Selected: ${selectedDistrict}` : 'Select your district above'}
               </p>
 
-              {/* Region Benefits */}
               <div className="mt-6 space-y-3">
                 <h3 className="font-semibold text-foreground">What you'll get:</h3>
                 <ul className="space-y-2">
@@ -133,6 +134,26 @@ export const RegionSelection = ({ onRegionSelected }: RegionSelectionProps) => {
                   ))}
                 </ul>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Crop Prices Card */}
+          <Card className="shadow-xl border-2 border-green-300 bg-gradient-to-br from-green-100 to-green-50 hover:scale-105 transition-transform duration-300">
+            <CardContent className="p-8 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mb-4">
+                <Settings className="h-8 w-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">Crop Prices</h2>
+              <p className="text-muted-foreground mb-4">
+                Access the latest crop prices and market trends to make informed decisions for your farm.
+              </p>
+              <Button 
+                variant="outline"
+                className="h-12 px-6"
+                onClick={() => onNavigate('crop_prices')}
+              >
+                View Prices
+              </Button>
             </CardContent>
           </Card>
         </div>

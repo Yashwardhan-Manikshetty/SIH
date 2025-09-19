@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,13 +16,16 @@ import {
   Camera,
   MessageSquare,
   Settings,
-  Menu,
   Bell,
   Sun,
   Cloud,
   CloudRain as RainIcon
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import axios from 'axios';
+
+// IMPORTANT: make sure WeatherCard exists at ./WeatherCard (the component I shared earlier)
+import WeatherCard from './WeatherCard';
 
 interface MainDashboardProps {
   selectedDistrict: string;
@@ -32,16 +35,8 @@ interface MainDashboardProps {
 
 export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: MainDashboardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const weatherData = [
-    { day: 'Today', icon: Sun, temp: '32°C', rain: '10%', desc: 'Sunny' },
-    { day: 'Tomorrow', icon: Cloud, temp: '29°C', rain: '20%', desc: 'Partly Cloudy' },
-    { day: 'Wed', icon: RainIcon, temp: '27°C', rain: '80%', desc: 'Rainy' },
-    { day: 'Thu', icon: Cloud, temp: '28°C', rain: '30%', desc: 'Cloudy' },
-    { day: 'Fri', icon: Sun, temp: '31°C', rain: '5%', desc: 'Sunny' },
-    { day: 'Sat', icon: RainIcon, temp: '26°C', rain: '90%', desc: 'Heavy Rain' },
-    { day: 'Sun', icon: Cloud, temp: '30°C', rain: '15%', desc: 'Partly Cloudy' }
-  ];
+  const [weatherData, setWeatherData] = useState<any[]>([]);
+  const [loadingWeather, setLoadingWeather] = useState(true);
 
   const cropRecommendations = [
     { crop: 'Soybean', score: 92, risk: 'Low', reason: 'Ideal monsoon conditions' },
@@ -86,6 +81,96 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
       default: return 'bg-muted text-muted-foreground';
     }
   };
+
+  // Helper: map tomorrow.io daily item -> WeatherCard props
+  const mapTomorrowDayToCard = (dayItem: any, index: number) => {
+    const v = dayItem.values || {};
+
+    // wind: many providers return m/s for metric — convert to km/h (m/s * 3.6)
+    const rawWind = v.windSpeedAvg ?? null;
+    const windKmH = rawWind != null ? Math.round(rawWind * 3.6 * 10) / 10 : null; // one decimal
+
+    return {
+      day:
+        index === 0
+          ? "Today"
+          : index === 1
+          ? "Tomorrow"
+          : new Date(dayItem.time).toLocaleDateString(undefined, { weekday: "short" }),
+      dateIso: dayItem.time,
+      tempAvg: v.temperatureAvg ?? null,
+      tempMin: v.temperatureMin ?? null,
+      tempMax: v.temperatureMax ?? null,
+      precipProb: (v.precipitationProbabilityAvg ?? v.precipitationProbabilityMax) ?? null,
+      precipAccum: (v.rainAccumulationSum ?? v.rainAccumulationAvg) ?? null,
+      cloudCover: v.cloudCoverAvg ?? null,
+      humidity: v.humidityAvg ?? null,
+      windSpeed: windKmH, // km/h
+      weatherCode: v.weatherCodeMax ?? v.weatherCodeAvg ?? null,
+      description:
+        (v.precipitationProbabilityAvg ?? 0) > 60
+          ? "Rain likely"
+          : (v.cloudCoverAvg ?? 0) > 60
+          ? "Cloudy"
+          : "Clear",
+      unit: "metric",
+      compact: false
+    };
+  };
+
+  // Fetch weather data from Tomorrow.io (or compatible) API
+  useEffect(() => {
+    const fetchWeather = async () => {
+      setLoadingWeather(true);
+      try {
+        const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+        const LOCATION = selectedDistrict ?? '28.6139,77.209'; // default Delhi coords you shared
+        if (!API_KEY) {
+          console.warn('VITE_WEATHER_API_KEY not set in .env.local');
+          setLoadingWeather(false);
+          return;
+        }
+
+        const params = {
+          location: LOCATION,
+          timesteps: '1d',
+          units: 'metric',
+          fields: [
+            'temperatureMin','temperatureMax','temperatureAvg',
+            'humidityAvg',
+            'precipitationProbabilityAvg','rainAccumulationSum',
+            'cloudCoverAvg',
+            'windSpeedAvg','windGustMax',
+            'weatherCodeMax'
+          ],
+          apikey: API_KEY
+        };
+
+        // axios will stringify arrays in params, but Tomorrow.io expects comma-separated fields — build URL manually
+        const fieldsParam = params.fields.join(',');
+        const url = `https://api.tomorrow.io/v4/weather/forecast?location=${encodeURIComponent(params.location)}&timesteps=${params.timesteps}&fields=${encodeURIComponent(fieldsParam)}&units=${params.units}&apikey=${encodeURIComponent(params.apikey)}`;
+
+        const response = await axios.get(url);
+        const daily = response.data?.timelines?.daily ?? [];
+
+        const mapped = daily.slice(0, 7).map((d: any, i: number) => mapTomorrowDayToCard(d, i));
+        setWeatherData(mapped);
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+        setWeatherData([]); // fallback
+      } finally {
+        setLoadingWeather(false);
+      }
+    };
+
+    fetchWeather();
+  }, []);
+
+  // today's quick metrics fallback (uses first weather card if available)
+  const todayCard = weatherData[0];
+  const displayTemp = todayCard?.tempAvg ? `${Math.round(todayCard.tempAvg)}°C` : '32°C';
+  const displayHumidity = todayCard?.humidity ? `${Math.round(todayCard.humidity)}%` : '68%';
+  const displayWind = todayCard?.windSpeed ? `${todayCard.windSpeed} km/h` : '12 km/h';
 
   return (
     <div className="min-h-screen bg-gradient-earth">
@@ -163,7 +248,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
         {/* Main Dashboard Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
           
-          {/* Weather Forecast Card */}
+          {/* Weather Forecast Card (replaced by WeatherCard row) */}
           <Card className="lg:col-span-2 shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -172,36 +257,21 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-7 gap-2">
-                {weatherData.map((day, index) => (
-                  <div key={index} className="text-center p-2 rounded-lg hover:bg-accent/5">
-                    <div className="text-xs font-medium text-muted-foreground mb-1">{day.day}</div>
-                    <day.icon className="h-6 w-6 mx-auto mb-1 text-sky" />
-                    <div className="text-sm font-semibold text-foreground">{day.temp}</div>
-                    <div className="text-xs text-muted-foreground">{day.rain}</div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-6 p-4 bg-sky/10 rounded-lg">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <Thermometer className="h-5 w-5 mx-auto mb-1 text-warning" />
-                    <div className="text-sm font-medium">Temperature</div>
-                    <div className="text-lg font-bold text-foreground">32°C</div>
-                  </div>
-                  <div className="text-center">
-                    <Droplets className="h-5 w-5 mx-auto mb-1 text-sky" />
-                    <div className="text-sm font-medium">Humidity</div>
-                    <div className="text-lg font-bold text-foreground">68%</div>
-                  </div>
-                  <div className="text-center">
-                    <Wind className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
-                    <div className="text-sm font-medium">Wind Speed</div>
-                    <div className="text-lg font-bold text-foreground">12 km/h</div>
-                  </div>
+              {loadingWeather ? (
+                <p>Loading weather...</p>
+              ) : (
+                <div className="flex gap-2 overflow-x-auto py-2">
+                  {weatherData.length > 0 ? (
+                    weatherData.map((d, i) => (
+                      <div key={d.dateIso ?? i} className="flex-shrink-0">
+                        <WeatherCard {...d} />
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No weather data available</p>
+                  )}
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 

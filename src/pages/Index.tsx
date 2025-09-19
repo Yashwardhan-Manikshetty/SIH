@@ -7,6 +7,7 @@ import DiseaseDetection from '../components/DiseaseDetection';
 import ChatbotPage from '../components/ChatbotPage';
 import {SettingsPage} from '../components/SettingsPage';
 import { ThemeProvider } from '../components/ThemeProvider';
+import  AgmarknetDashboard  from '../components/AgmarknetDashboard';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('landing');
@@ -45,11 +46,16 @@ const Index = () => {
             onLearnMore={handleLearnMore}
           />
         );
+      case 'crop_prices':
+        return (
+          <AgmarknetDashboard/>
+        );
       
       case 'region-selection':
         return (
           <RegionSelection 
             onRegionSelected={handleRegionSelection}
+            onNavigate={handlePageNavigation}
           />
         );
       
