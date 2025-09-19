@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AgrowHeader } from './AgrowHeader';
-import { MapPin, ArrowRight, CheckCircle, Settings } from 'lucide-react';
+import { MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import * as React from "react";
 
 interface RegionSelectionProps {
   onRegionSelected: (district: string) => void;
@@ -14,11 +15,8 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
   const [selectedDistrict, setSelectedDistrict] = useState('');
 
   const districts = [
-    'Pune', 'Mumbai', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Kolhapur', 'Amravati',
-    'Sangli', 'Satara', 'Ahmednagar', 'Latur', 'Dhule', 'Jalgaon', 'Akola', 'Yavatmal',
-    'Nanded', 'Osmanabad', 'Beed', 'Parbhani', 'Buldhana', 'Washim', 'Hingoli', 'Jalna',
-    'Chandrapur', 'Gadchiroli', 'Gondiya', 'Bhandara', 'Wardha', 'Raigad', 'Thane',
-    'Ratnagiri', 'Sindhudurg', 'Nandurbar'
+    'Pune', 'Mumbai', 'Nagpur', 'Nashik', 'Solapur', 'Kolhapur', 
+    'Sangli', 'Satara', 'Jalgaon', 
   ];
 
   const handleConfirmRegion = () => {
@@ -103,18 +101,22 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
           <Card className="shadow-elevated">
             <CardContent className="p-8">
               <h2 className="text-2xl font-semibold text-foreground mb-6">Maharashtra Map</h2>
-              
-              <div className="aspect-square bg-gradient-sky rounded-2xl p-6 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-32 h-32 bg-primary/20 rounded-full flex items-center justify-center mb-4">
-                    <MapPin className="h-16 w-16 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">Maharashtra</h3>
-                  <p className="text-muted-foreground">
-                    {selectedDistrict ? `Selected: ${selectedDistrict}` : 'Select your district above'}
-                  </p>
-                </div>
+   
+              {/* Image-based Maharashtra Map */}
+              <div className="aspect-square rounded-2xl overflow-hidden">
+                <img
+                  src="/mapp.jpeg"   // ✅ put your second image in /public with this name
+                  alt="Maharashtra Map"
+                  className="w-full h-full object-cover"
+                />
               </div>
+
+              <h3 className="text-xl font-semibold text-foreground mt-4 text-center">
+                Maharashtra
+              </h3>
+              <p className="text-muted-foreground text-center">
+                {selectedDistrict ? `Selected: ${selectedDistrict}` : 'Select your district above'}
+              </p>
 
               <div className="mt-6 space-y-3">
                 <h3 className="font-semibold text-foreground">What you'll get:</h3>
@@ -123,7 +125,6 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
                     'Localized weather forecasts',
                     'Region-specific crop recommendations',
                     'Local disease outbreak alerts',
-                    'Soil health insights for your area',
                     'Market price updates'
                   ].map((benefit, index) => (
                     <li key={index} className="flex items-center text-sm text-muted-foreground">

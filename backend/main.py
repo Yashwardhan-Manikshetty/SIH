@@ -2,10 +2,14 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
-import os, uuid, json, datetime
+import os, uuid, json, datetime, requests
+from dotenv import load_dotenv
 
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 
+# ==============================
+# Database Setup
+# ==============================
 DATABASE_URL = "sqlite:///./backend.db"
 engine = create_engine(DATABASE_URL, echo=False)
 
@@ -28,12 +32,19 @@ class ChatMessage(SQLModel, table=True):
     reply: str
     timestamp: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
 
+# ==============================
+# App Initialization
+# ==============================
 app = FastAPI(title="Farmwise Kisan Sathi API (FastAPI)")
 
-# Allow requests from local frontend during development
+# Load environment variables (API keys etc.)
+load_dotenv()
+API_KEY = os.getenv("TOMORROW_API_KEY")
+
+# Enable CORS for frontend (Vite runs on port 5173 by default)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "*"],  # dev setup
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,10 +55,16 @@ def on_startup():
     SQLModel.metadata.create_all(engine)
     os.makedirs("./uploads", exist_ok=True)
 
+# ==============================
+# Root
+# ==============================
 @app.get("/")
 def root():
     return {"message": "Farmwise Kisan Sathi API - FastAPI backend is running."}
 
+# ==============================
+# Detection Endpoint
+# ==============================
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
     """
@@ -64,7 +81,7 @@ async def detect(file: UploadFile = File(...)):
     with open(dest, "wb") as fh:
         fh.write(contents)
 
-    # Simulate analysis result (replace with real model inference later)
+    # Simulate analysis result (replace with real ML model inference later)
     disease = "Leaf Blight"
     confidence = 0.92
 
@@ -81,6 +98,9 @@ async def detect(file: UploadFile = File(...)):
             "timestamp": det.timestamp.isoformat()
         }
 
+# ==============================
+# Chat Endpoint
+# ==============================
 class ChatRequest(BaseModel):
     message: str
 
@@ -92,6 +112,7 @@ def chat(req: ChatRequest):
     message = req.message.strip()
     if not message:
         raise HTTPException(status_code=400, detail="Empty message")
+
     # Very simple rule-based reply (placeholder)
     reply = f"Received: {message} — (this is a placeholder reply from backend)"
     with Session(engine) as session:
@@ -101,6 +122,9 @@ def chat(req: ChatRequest):
         session.refresh(chat)
     return {"reply": reply, "id": chat.id, "timestamp": chat.timestamp.isoformat()}
 
+# ==============================
+# History Endpoints
+# ==============================
 @app.get("/history/detections")
 def list_detections(limit: int = 50):
     with Session(engine) as session:
@@ -115,6 +139,9 @@ def list_chats(limit: int = 50):
         results = session.exec(stmt).all()
         return results
 
+# ==============================
+# Preferences Endpoints
+# ==============================
 class PreferenceIn(BaseModel):
     selected_district: Optional[str] = None
     selected_crops: Optional[List[str]] = None
@@ -138,3 +165,28 @@ def get_preferences(limit: int = 20):
     with Session(engine) as session:
         stmt = select(Preference).order_by(Preference.id.desc()).limit(limit)
         return session.exec(stmt).all()
+
+# ==============================
+# Weather Endpoint (Tomorrow.io)
+# ==============================
+@app.get("/weather")
+def get_weather(lat: float = 19.9975, lon: float = 73.7898):
+    """
+    Fetch weather forecast (daily) from Tomorrow.io API.
+    """
+    if not API_KEY:
+        raise HTTPException(status_code=500, detail="API key not set")
+
+    url = (
+        f"https://api.tomorrow.io/v4/weather/forecast"
+        f"?location={lat},{lon}&timesteps=daily&units=metric&apikey={API_KEY}"
+    )
+
+    headers = {"accept": "application/json"}
+
+    try:
+        r = requests.get(url, headers=headers, timeout=10)
+        r.raise_for_status()
+        return r.json()
+    except requests.RequestException as e:
+        raise HTTPException(status_code=502, detail=str(e))

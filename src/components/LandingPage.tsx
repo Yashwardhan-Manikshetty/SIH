@@ -62,17 +62,15 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
                 </div>
               </div>
               
-              {/* Hero Illustration */}
+              {/* ✅ Hero Illustration with ONLY IoT Farming Image */}
               <div className="relative">
                 <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 shadow-elevated">
-                  <div className="aspect-square bg-primary/10 rounded-2xl flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <Leaf className="h-12 w-12 text-primary-foreground" />
-                      </div>
-                      <h3 className="text-xl font-semibold text-white mb-2">AI Assistant</h3>
-                      <p className="text-gray-200">Helping farmers make smarter decisions</p>
-                    </div>
+                  <div className="aspect-square rounded-2xl overflow-hidden">
+                    <img 
+                      src="/farm-iot.jpeg"   // place your IoT image in public/farm-iot.jpg
+                      alt="Smart Farming IoT"
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
                   </div>
                 </div>
               </div>
@@ -111,8 +109,8 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
                 },
                 {
                   icon: TrendingUp,
-                  title: "Yield Optimization",
-                  description: "Maximize your harvest with data-driven farming strategies"
+                  title: "Current Market Prices",
+                  description: "Latest mandi prices for their crops across districts to make smarter selling decisions."
                 },
                 {
                   icon: Smartphone,
@@ -125,13 +123,18 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
                   description: "Available in Marathi, Hindi, and English for better accessibility"
                 }
               ].map((feature, index) => (
-                <Card key={index} className="hover:shadow-elevated transition-shadow duration-300 bg-white/10 backdrop-blur-md">
+                <Card 
+                  key={index} 
+                  className="hover:shadow-elevated transition-shadow duration-300" 
+                  style={{ backgroundColor: '#DDE5B6' }}   // ✅ New background color
+                >
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <feature.icon className="h-6 w-6 text-primary" />
+                    {/* icon container transparent now */}
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                      <feature.icon className="h-6 w-6 text-black" />   {/* Dark icon */}
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-                    <p className="text-gray-200">{feature.description}</p>
+                    <h3 className="text-xl font-semibold text-black mb-2">{feature.title}</h3>
+                    <p className="text-gray-800">{feature.description}</p>
                   </CardContent>
                 </Card>
               ))}
