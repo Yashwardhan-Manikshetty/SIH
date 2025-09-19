@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AgrowHeader } from './AgrowHeader';
-import { MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import { MapPin, ArrowRight, CheckCircle, Settings } from 'lucide-react';
 import * as React from "react";
 
 interface RegionSelectionProps {
