@@ -51,7 +51,7 @@ export default function AgmarknetDashboard() {
       setError(null);
       try {
         const url =
-          "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd00000156ada50532e9494e7b6db332a28584ed&format=json&limit=1000";
+          "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd00000156ada50532e9494e7b6db332a28584ed&format=json&limit=1000&&filters[state.keyword]=Maharashtra";
         const response = await fetch(url);
         
         if (!response.ok) {
