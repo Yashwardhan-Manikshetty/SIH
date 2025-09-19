@@ -27,13 +27,13 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <UnifiedHeader 
+      {/* <UnifiedHeader 
         showLanguageSelector={true}
         showVoiceAssistant={false}
         showDarkMode={true}
         showMobileMenu={true}
         variant="dashboard"
-      />
+      /> */}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
@@ -46,7 +46,7 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
         </div>
 
         {/* Grid for 3 cards */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8">
           {/* District Selection Card */}
           <Card className="shadow-elevated">
             <CardContent className="p-8">
@@ -143,7 +143,7 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
             </CardContent>
           </Card>
 
-          {/* Crop Prices Card */}
+          {/* Crop Prices Card
           <Card className="shadow-xl border-2 border-green-300 bg-gradient-to-br from-green-100 to-green-50 hover:scale-105 transition-transform duration-300">
             <CardContent className="p-8 flex flex-col items-center justify-center text-center">
               <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mb-4">
@@ -162,6 +162,7 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
               </Button>
             </CardContent>
           </Card>
+           */}
         </div>
 
         {/* Additional Information */}

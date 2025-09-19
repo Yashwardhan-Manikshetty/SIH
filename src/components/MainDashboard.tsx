@@ -149,13 +149,13 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <UnifiedHeader 
+      {/* <UnifiedHeader 
         showLanguageSelector={true}
         showVoiceAssistant={true}
         showDarkMode={true}
         showMobileMenu={true}
         variant="dashboard"
-      />
+      /> */}
 
       {/* Offline Banner */}
       <div className="bg-warning/20 border-b border-warning/30 px-4 py-2">

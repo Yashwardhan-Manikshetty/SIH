@@ -25,6 +25,7 @@ interface UnifiedHeaderProps {
   showDarkMode?: boolean;
   showMobileMenu?: boolean;
   variant?: 'default' | 'dashboard';
+  isLoggedIn?: boolean;
 }
 
 export const UnifiedHeader = ({ 
@@ -32,7 +33,8 @@ export const UnifiedHeader = ({
   showVoiceAssistant = false,
   showDarkMode = true,
   showMobileMenu = true,
-  variant = 'default'
+  variant = 'default',
+  isLoggedIn = false
 }: UnifiedHeaderProps) => {
   const [language, setLanguage] = useState('en');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,15 +45,15 @@ export const UnifiedHeader = ({
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  const homeItem = isLoggedIn 
+    ? { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }
+    : { path: '/', label: 'Home', icon: Home };
+
   const navItems = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/region-selection', label: 'Region', icon: MapPin },
-    { path: '/crop-selection', label: 'Crops', icon: Wheat },
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    homeItem,
     { path: '/disease-detection', label: 'Disease Detection', icon: Camera },
     { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
     { path: '/crop-prices', label: 'Market Prices', icon: TrendingUp },
-    { path: '/settings', label: 'Settings', icon: Settings },
   ];
 
   // Mobile Navigation Drawer Component
@@ -224,17 +226,17 @@ export const UnifiedHeader = ({
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
-      {showMobileMenu && (
+      {/* Mobile Navigation Drawer
+      showMobileMenu && (
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-          <SheetContent side="left" className="w-64">
+          <SheetContent className="w-64">
             <div className="py-4">
               <h2 className="text-lg font-semibold mb-4">Navigation</h2>
               <MobileNavigationDrawer />
             </div>
           </SheetContent>
         </Sheet>
-      )}
+      ) */}
     </>
   );
 };

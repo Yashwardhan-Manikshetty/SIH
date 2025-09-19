@@ -59,13 +59,13 @@ export const SettingsPage = ({ onNavigate }: SettingsPageProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <UnifiedHeader 
+      {/* <UnifiedHeader 
         showLanguageSelector={true}
         showVoiceAssistant={false}
         showDarkMode={true}
         showMobileMenu={true}
         variant="dashboard"
-      />
+      /> */}
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
