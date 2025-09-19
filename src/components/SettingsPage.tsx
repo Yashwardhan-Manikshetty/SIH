@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { AgrowHeader } from './AgrowHeader';
+import { UnifiedHeader } from './UnifiedHeader';
 import { 
   ArrowLeft, 
   Globe, 
@@ -59,10 +59,13 @@ export const SettingsPage = ({ onNavigate }: SettingsPageProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <AgrowHeader 
+      {/* <UnifiedHeader 
         showLanguageSelector={true}
+        showVoiceAssistant={false}
         showDarkMode={true}
-      />
+        showMobileMenu={true}
+        variant="dashboard"
+      /> */}
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
