@@ -83,7 +83,7 @@ const ChatbotPage: React.FC = () => {
         <header className="app-header">
           <a className="back" href="#">← Back to Dashboard</a>
           <div className="title">
-            <div className="logo"><img src="/favicon.ico" alt="logo" /></div>
+            <div className="logo">🌿</div>
             <div>
               <h1 id="appTitle">Agrow AI Assistant</h1>
               <p className="subtitle" id="appSubtitle">Get instant farming advice and insights</p>
