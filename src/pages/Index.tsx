@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { LandingPage } from '../components/LandingPage';
-import { RegionSelection } from '../components/RegionSelection';
-import { CropSelection } from '../components/CropSelection';
-import { MainDashboard } from '../components/MainDashboard';
-import { DiseaseDetection } from '../components/DiseaseDetection';
-import { ChatbotPage } from '../components/ChatbotPage';
-import { SettingsPage } from '../components/SettingsPage';
+import {LandingPage} from '../components/LandingPage';
+import {RegionSelection} from '../components/RegionSelection';
+import {CropSelection} from '../components/CropSelection';
+import {MainDashboard} from '../components/MainDashboard';
+import DiseaseDetection from '../components/DiseaseDetection';
+import ChatbotPage from '../components/ChatbotPage';
+import {SettingsPage} from '../components/SettingsPage';
 import { ThemeProvider } from '../components/ThemeProvider';
 
 const Index = () => {

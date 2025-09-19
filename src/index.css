@@ -10,28 +10,20 @@ All colors MUST be HSL.
   :root {
     --background: 48 36% 97%;
     --foreground: 32 18% 12%;
-
     --card: 48 36% 98%;
     --card-foreground: 32 18% 15%;
-
     --popover: 48 36% 98%;
     --popover-foreground: 32 18% 15%;
-
     --primary: 142 69% 35%;
     --primary-foreground: 48 36% 98%;
-
     --secondary: 142 25% 88%;
     --secondary-foreground: 142 69% 25%;
-
     --muted: 142 15% 92%;
     --muted-foreground: 32 12% 45%;
-
     --accent: 142 35% 75%;
     --accent-foreground: 142 69% 25%;
-
     --destructive: 0 84% 55%;
     --destructive-foreground: 48 36% 98%;
-
     --border: 142 20% 85%;
     --input: 142 20% 88%;
     --ring: 142 69% 35%;
@@ -55,47 +47,32 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
     --background: 32 18% 8%;
     --foreground: 48 36% 92%;
-
     --card: 32 18% 10%;
     --card-foreground: 48 36% 90%;
-
     --popover: 32 18% 10%;
     --popover-foreground: 48 36% 90%;
-
     --primary: 142 69% 45%;
     --primary-foreground: 32 18% 8%;
-
     --secondary: 142 25% 15%;
     --secondary-foreground: 142 69% 65%;
-
     --muted: 142 15% 12%;
     --muted-foreground: 32 12% 65%;
-
     --accent: 142 35% 25%;
     --accent-foreground: 142 69% 75%;
-
     --destructive: 0 84% 65%;
     --destructive-foreground: 32 18% 8%;
-
     --border: 142 20% 18%;
     --input: 142 20% 15%;
     --ring: 142 69% 45%;
@@ -115,6 +92,7 @@ All colors MUST be HSL.
     /* Dark mode shadows */
     --shadow-card: 0 4px 12px hsl(0 0% 0% / 0.25);
     --shadow-elevated: 0 8px 24px hsl(0 0% 0% / 0.35);
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -133,5 +111,24 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    margin: 0;
+    background-image: url('/farm1.jpg');   /* 👈 apply here */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;          /* 👈 keeps it covering whole scroll */
+    background-position: center;
+    animation: slideBackground 30s infinite linear;
+  }
+}
+
+@keyframes slideBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
