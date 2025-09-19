@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AgrowHeader } from './AgrowHeader';
+import { UnifiedHeader } from './UnifiedHeader';
 import { MapPin, ArrowRight, CheckCircle, Settings } from 'lucide-react';
 import * as React from "react";
 
@@ -27,7 +27,13 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <AgrowHeader />
+      <UnifiedHeader 
+        showLanguageSelector={true}
+        showVoiceAssistant={false}
+        showDarkMode={true}
+        showMobileMenu={true}
+        variant="dashboard"
+      />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">

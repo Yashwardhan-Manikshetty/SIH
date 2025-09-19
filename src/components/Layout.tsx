@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import Navigation from './Navigation';
+import { UnifiedHeader } from './UnifiedHeader';
 import { ThemeProvider } from './ThemeProvider';
 
 const Layout = () => {
@@ -11,7 +11,13 @@ const Layout = () => {
       disableTransitionOnChange
     >
       <div className="min-h-screen bg-gray-50">
-        <Navigation />
+        <UnifiedHeader 
+          showLanguageSelector={true}
+          showVoiceAssistant={false}
+          showDarkMode={true}
+          showMobileMenu={true}
+          variant="default"
+        />
         <main className="max-w-7xl mx-auto px-4 py-6">
           <Outlet />
         </main>
