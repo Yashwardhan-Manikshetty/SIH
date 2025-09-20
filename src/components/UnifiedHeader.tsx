@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { 
   Home, 
   MapPin, 
@@ -15,9 +15,12 @@ import {
   Sun, 
   Moon, 
   Mic, 
-  Menu 
+  Menu,
+  LogOut,
+  User
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface UnifiedHeaderProps {
   showLanguageSelector?: boolean;
@@ -40,25 +43,38 @@ export const UnifiedHeader = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const location = useLocation();
+  const { user, logout, isAuthenticated } = useAuth();
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const homeItem = isLoggedIn 
+  const homeItem = isAuthenticated 
     ? { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }
     : { path: '/', label: 'Home', icon: Home };
 
   const navItems = [
     homeItem,
-    { path: '/disease-detection', label: 'Disease Detection', icon: Camera },
-    { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
-    { path: '/crop-prices', label: 'Market Prices', icon: TrendingUp },
   ];
+
+  // Add authentication-specific items
+  const authItems = isAuthenticated 
+    ? [
+      { path: '/disease-detection', label: 'Disease Detection', icon: Camera },
+      { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
+      { path: '/crop-prices', label: 'Market Prices', icon: TrendingUp },
+        // { path: '/region-selection', label: 'Region', icon: MapPin },
+        // { path: '/crop-selection', label: 'Crops', icon: Wheat },
+        // { path: '/settings', label: 'Settings', icon: Settings },
+      ]
+    : [
+        { path: '/auth', label: 'Login', icon: User },
+      ];
 
   // Mobile Navigation Drawer Component
   const MobileNavigationDrawer = () => (
     <div className="space-y-4">
+      {/* Main Navigation Items */}
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = location.pathname === item.path;
@@ -83,6 +99,47 @@ export const UnifiedHeader = ({
           </Link>
         );
       })}
+      
+      {/* Authentication Items */}
+      {authItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = location.pathname === item.path;
+        
+        return (
+          <Link 
+            key={item.path} 
+            to={item.path}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <Button
+              variant={isActive ? "default" : "ghost"}
+              className={`w-full justify-start ${
+                isActive 
+                  ? "bg-green-600 text-white" 
+                  : "text-gray-600 hover:text-green-600"
+              }`}
+            >
+              <Icon className="h-4 w-4 mr-3" />
+              {item.label}
+            </Button>
+          </Link>
+        );
+      })}
+      
+      {/* Logout Button for Authenticated Users */}
+      {isAuthenticated && (
+        <Button
+          variant="ghost"
+          onClick={() => {
+            logout();
+            setIsMenuOpen(false);
+          }}
+          className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+        >
+          <LogOut className="h-4 w-4 mr-3" />
+          Logout
+        </Button>
+      )}
     </div>
   );
 
@@ -172,10 +229,45 @@ export const UnifiedHeader = ({
                   </Link>
                 );
               })}
+              
+              {/* Authentication Items */}
+              {authItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link key={item.path} to={item.path}>
+                    <Button
+                      variant={isActive ? "default" : "ghost"}
+                      size="sm"
+                      className={`flex items-center space-x-2 ${
+                        isActive 
+                          ? "bg-green-600 text-white" 
+                          : variant === 'dashboard'
+                            ? "text-primary-foreground hover:text-green-400"
+                            : "text-gray-600 hover:text-green-600"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{item.label}</span>
+                    </Button>
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Right Side Controls */}
             <div className="flex items-center space-x-3">
+              {/* User Info for Authenticated Users */}
+              {isAuthenticated && user && (
+                <div className="hidden lg:flex items-center space-x-2 px-3 py-1 rounded-lg bg-green-50">
+                  <User className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">
+                    {user.username}
+                  </span>
+                </div>
+              )}
+
               {showLanguageSelector && (
                 <Select value={language} onValueChange={setLanguage}>
                   <SelectTrigger className={`w-32 ${
@@ -221,22 +313,41 @@ export const UnifiedHeader = ({
                   <Mic className="h-5 w-5" />
                 </Button>
               )}
+
+              {/* Logout Button for Authenticated Users */}
+              {isAuthenticated && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={logout}
+                  className={`hover:bg-opacity-80 ${
+                    variant === 'dashboard'
+                      ? "text-primary-foreground hover:bg-red-500/20"
+                      : "text-red-600 hover:bg-red-50"
+                  }`}
+                  title="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer
-      showMobileMenu && (
+      {/* Mobile Navigation Drawer - Temporarily disabled due to TypeScript issues */}
+      {/* {showMobileMenu && (
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-          <SheetContent className="w-64">
+          <SheetContent side="left" className="w-64">
+            <SheetHeader>
+              <SheetTitle>Navigation</SheetTitle>
+            </SheetHeader>
             <div className="py-4">
-              <h2 className="text-lg font-semibold mb-4">Navigation</h2>
               <MobileNavigationDrawer />
             </div>
           </SheetContent>
         </Sheet>
-      ) */}
+      )} */}
     </>
   );
 };

@@ -6,7 +6,7 @@ const LandingPageRoute = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate('/region-selection');
+    navigate('/auth');
   };
 
   const handleLearnMore = () => {
