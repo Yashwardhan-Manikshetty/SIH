@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { AgrowHeader } from './AgrowHeader';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { UnifiedHeader } from './UnifiedHeader';
 import { 
   CloudRain, 
@@ -17,6 +19,8 @@ interface LandingPageProps {
 }
 
 export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background image */}
@@ -44,18 +48,18 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-                  Smart Farming for
-                  <span className="text-primary block">Maharashtra</span>
+                  {t('landing.hero.title')}
+                  <span className="text-primary block">{t('landing.hero.titleHighlight')}</span>
                 </h1>
                 <p className="text-xl text-gray-200 mb-8 max-w-2xl">
-                  AI-powered insights for crop selection, disease diagnosis, and yield optimization based on real-time weather, soil health, and climate data.
+                  {t('landing.hero.subtitle')}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Button 
                     onClick={onGetStarted}
                     className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6 rounded-lg shadow-elevated"
                   >
-                    Get Started
+                    {t('landing.hero.getStarted')}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   <Button 
@@ -63,7 +67,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
                     onClick={onLearnMore}
                     className="text-lg px-8 py-6 rounded-lg border-2 border-primary/20 hover:bg-primary/5 bg-white/10 text-white"
                   >
-                    Learn More
+                    {t('landing.hero.learnMore')}
                   </Button>
                 </div>
               </div>
@@ -89,10 +93,10 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Why Choose Agrow AI?
+                {t('landing.features.title')}
               </h2>
               <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-                Comprehensive AI-powered farming solutions designed specifically for Maharashtra's diverse agricultural landscape.
+                {t('landing.features.subtitle')}
               </p>
             </div>
 
@@ -100,33 +104,33 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
               {[
                 {
                   icon: CloudRain,
-                  title: "Weather Intelligence",
-                  description: "7-day forecasts with monsoon predictions and climate insights"
+                  title: t('landing.features.weather.title'),
+                  description: t('landing.features.weather.desc')
                 },
                 {
                   icon: Leaf,
-                  title: "Crop Recommendations",
-                  description: "AI-powered suggestions for optimal crop selection based on your region"
+                  title: t('landing.features.crop.title'),
+                  description: t('landing.features.crop.desc')
                 },
                 {
                   icon: Shield,
-                  title: "Disease Detection",
-                  description: "Early identification of crop diseases with treatment recommendations"
+                  title: t('landing.features.disease.title'),
+                  description: t('landing.features.disease.desc')
                 },
                 {
                   icon: TrendingUp,
-                  title: "Current Market Prices",
-                  description: "Latest mandi prices for their crops across districts to make smarter selling decisions."
+                  title: t('landing.features.market.title'),
+                  description: t('landing.features.market.desc')
                 },
                 {
                   icon: Smartphone,
-                  title: "Mobile Friendly",
-                  description: "Access insights anywhere, even with limited internet connectivity"
+                  title: t('landing.features.mobile.title'),
+                  description: t('landing.features.mobile.desc')
                 },
                 {
                   icon: Globe,
-                  title: "Local Language Support",
-                  description: "Available in Marathi, Hindi, and English for better accessibility"
+                  title: t('landing.features.language.title'),
+                  description: t('landing.features.language.desc')
                 }
               ].map((feature, index) => (
                 <Card 
@@ -150,8 +154,8 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
 
         {/* Footer Section */}
         <footer className="mt-auto py-8 bg-black/60 backdrop-blur-md text-center text-gray-300">
-          <p>© {new Date().getFullYear()} Agrow AI. All rights reserved.</p>
-          <p className="text-sm mt-2">Empowering Maharashtra farmers with AI-powered solutions</p>
+          <p>{t('landing.footer.copyright')}</p>
+          <p className="text-sm mt-2">{t('landing.footer.tagline')}</p>
         </footer>
       </div>
     </div>

@@ -3,10 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea'; // Merged from ui_changes2
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Phone, MapPin, Building, ArrowRight, LogIn, UserPlus } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+// AgrowHeader from ui_changes2, assuming it's a desired global header
+import { AgrowHeader } from './AgrowHeader'; 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { User, Phone, MapPin, Building, ArrowRight, LogIn, UserPlus } from 'lucide-react';
 
 interface AuthPageProps {
   onLoginSuccess: () => void;
@@ -14,11 +17,13 @@ interface AuthPageProps {
 
 export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
   const { t } = useLanguage();
-  const { login, register } = useAuth();
+  const { login, register } = useAuth(); // Merged: both login and register from main
   const [isLogin, setIsLogin] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // From main
 
+  // State for login form (from main)
   const [loginData, setLoginData] = useState({ username: '', password: '' });
+  // State for registration form (from main)
   const [registerData, setRegisterData] = useState({
     username: '',
     email: '',
@@ -26,25 +31,37 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     confirmPassword: '',
     phone: '',
     state: '',
-    city: '',
+    city: '', // Changed from district in ui_changes2 to city in main
     crop_preferences: [] as string[],
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // States and cities
+  // State and city data (using main's city structure)
   const states = [
     { value: 'Punjab', label: 'Punjab' },
     { value: 'Maharashtra', label: 'Maharashtra' }
   ];
 
-  const cities = {
-    Punjab: ['Amritsar', 'Barnala', 'Bathinda', 'Faridkot', 'Fatehgarh Sahib', 'Firozpur', 'Gurdaspur', 'Hoshiarpur', 'Jalandhar', 'Kapurthala', 'Ludhiana', 'Mansa', 'Moga', 'Muktsar', 'Patiala', 'Rupnagar', 'Sangrur', 'Tarn Taran'],
-    Maharashtra: ['Ahmednagar', 'Akola', 'Amravati', 'Aurangabad', 'Beed', 'Bhandara', 'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli', 'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai Suburban', 'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 'Osmanabad', 'Palghar', 'Parbhani', 'Pune', 'Raigad', 'Ratnagiri', 'Sangli', 'Satara', 'Sindhudurg', 'Solapur', 'Thane', 'Wardha', 'Washim', 'Yavatmal']
+  const cities = { // Using main's more comprehensive city list
+    Punjab: [
+      'Amritsar', 'Barnala', 'Bathinda', 'Faridkot', 'Fatehgarh Sahib',
+      'Firozpur', 'Gurdaspur', 'Hoshiarpur', 'Jalandhar', 'Kapurthala',
+      'Ludhiana', 'Mansa', 'Moga', 'Muktsar', 'Patiala', 'Rupnagar',
+      'Sahibzada Ajit Singh Nagar', 'Sangrur', 'Tarn Taran' // Added SAS Nagar from ui_changes2 for completeness
+    ],
+    Maharashtra: [
+      'Ahmednagar', 'Akola', 'Amravati', 'Aurangabad', 'Beed', 'Bhandara',
+      'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli',
+      'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai Suburban',
+      'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 'Osmanabad', 'Palghar',
+      'Parbhani', 'Pune', 'Raigad', 'Ratnagiri', 'Sangli', 'Satara',
+      'Sindhudurg', 'Solapur', 'Thane', 'Wardha', 'Washim', 'Yavatmal'
+    ]
   };
 
   const cropOptions = ['wheat', 'rice', 'sugarcane', 'cotton', 'maize', 'soybean', 'bajra', 'jowar', 'groundnut', 'sunflower', 'mustard', 'barley'];
 
-  // --- Input Handlers ---
+  // --- Input Handlers (from main) ---
   const handleLoginInputChange = (field: string, value: string) => {
     setLoginData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
@@ -63,11 +80,11 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     handleRegisterInputChange('crop_preferences', updated);
   };
 
-  // --- Form Validation ---
+  // --- Form Validation (from main, updated with translations) ---
   const validateLoginForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!loginData.username.trim()) newErrors.username = 'Username is required';
-    if (!loginData.password.trim()) newErrors.password = 'Password is required';
+    if (!loginData.username.trim()) newErrors.username = t('auth.login.errors.usernameRequired');
+    if (!loginData.password.trim()) newErrors.password = t('auth.login.errors.passwordRequired');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,23 +93,23 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     const newErrors: Record<string, string> = {};
     const { username, email, password, confirmPassword, phone, state, city } = registerData;
 
-    if (!username.trim()) newErrors.username = 'Username is required';
-    if (!email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
-    if (!password.trim()) newErrors.password = 'Password is required';
-    else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (!confirmPassword.trim()) newErrors.confirmPassword = 'Confirm password is required';
-    else if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-    if (!phone.trim()) newErrors.phone = 'Phone number is required';
-    else if (!/^\+?[\d\s-()]+$/.test(phone)) newErrors.phone = 'Phone number is invalid';
-    if (!state) newErrors.state = 'State is required';
-    if (!city) newErrors.city = 'City is required';
+    if (!username.trim()) newErrors.username = t('auth.register.errors.usernameRequired');
+    if (!email.trim()) newErrors.email = t('auth.register.errors.emailRequired');
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = t('auth.register.errors.emailInvalid');
+    if (!password.trim()) newErrors.password = t('auth.register.errors.passwordRequired');
+    else if (password.length < 6) newErrors.password = t('auth.register.errors.passwordMinLength');
+    if (!confirmPassword.trim()) newErrors.confirmPassword = t('auth.register.errors.confirmPasswordRequired');
+    else if (password !== confirmPassword) newErrors.confirmPassword = t('auth.register.errors.passwordsMismatch');
+    if (!phone.trim()) newErrors.phone = t('auth.register.errors.phoneRequired');
+    else if (!/^\+?[\d\s-()]+$/.test(phone)) newErrors.phone = t('auth.register.errors.phoneInvalid');
+    if (!state) newErrors.state = t('auth.register.errors.stateRequired');
+    if (!city) newErrors.city = t('auth.register.errors.cityRequired');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // --- Submit Handlers ---
+  // --- Submit Handlers (from main, updated with translations) ---
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -102,7 +119,7 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
         await login(loginData.username.trim(), loginData.password.trim());
         onLoginSuccess();
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
+        const errorMessage = error instanceof Error ? error.message : t('auth.general.loginFailed');
         setErrors({ general: errorMessage });
       }
     }
@@ -127,14 +144,14 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
         await register(payload);
         onLoginSuccess();
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+        const errorMessage = error instanceof Error ? error.message : t('auth.general.registrationFailed');
         setErrors({ general: errorMessage });
       }
     }
     setIsLoading(false);
   };
 
-  // --- Toggle Login/Register Mode ---
+  // --- Toggle Login/Register Mode (from main) ---
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setLoginData({ username: '', password: '' });
@@ -147,19 +164,22 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
   // --- JSX ---
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50"> {/* Retained main's gradient */}
+      {/* AgrowHeader from ui_changes2 branch */}
+      <AgrowHeader showLanguageSelector={true} />
+      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {isLogin ? 'Welcome Back' : 'Create Your Account'}
+            {isLogin ? t('auth.login.title') : t('auth.register.title')}
           </h1>
           <p className="text-xl text-gray-600">
-            {isLogin ? 'Sign in to access your farming dashboard' : 'Join our farming community today'}
+            {isLogin ? t('auth.login.subtitle') : t('auth.register.subtitle')}
           </p>
           {!isLogin && (
             <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
               <p className="text-sm text-green-800">
-                Complete your registration to access personalized farming insights and recommendations.
+                {t('auth.register.alertMessage')}
               </p>
             </div>
           )}
@@ -167,12 +187,12 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Form Card */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg"> {/* From main's styling */}
             <CardHeader>
               <CardTitle className="flex items-center text-2xl">
                 {isLogin
-                  ? <><LogIn className="mr-3 h-6 w-6 text-green-600" />Sign In</>
-                  : <><UserPlus className="mr-3 h-6 w-6 text-green-600" />Create Account</>}
+                  ? <><LogIn className="mr-3 h-6 w-6 text-green-600" />{t('auth.login.formTitle')}</>
+                  : <><UserPlus className="mr-3 h-6 w-6 text-green-600" />{t('auth.register.formTitle')}</>}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -183,16 +203,16 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
               )}
 
               {isLogin ? (
-                <div className="space-y-6">
+                <form onSubmit={handleLoginSubmit} className="space-y-6"> {/* Wrapped in form */}
                   {/* Username */}
                   <div className="space-y-2">
-                    <Label htmlFor="loginUsername" className="text-sm font-medium">Username *</Label>
+                    <Label htmlFor="loginUsername" className="text-sm font-medium">{t('auth.fields.username')} *</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         id="loginUsername"
                         type="text"
-                        placeholder="Enter your username"
+                        placeholder={t('auth.login.placeholders.username')}
                         value={loginData.username}
                         onChange={e => handleLoginInputChange('username', e.target.value)}
                         className={`pl-10 ${errors.username ? 'border-red-500' : ''}`}
@@ -203,11 +223,11 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
                   {/* Password */}
                   <div className="space-y-2">
-                    <Label htmlFor="loginPassword" className="text-sm font-medium">Password *</Label>
+                    <Label htmlFor="loginPassword" className="text-sm font-medium">{t('auth.fields.password')} *</Label>
                     <Input
                       id="loginPassword"
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('auth.login.placeholders.password')}
                       value={loginData.password}
                       onChange={e => handleLoginInputChange('password', e.target.value)}
                       className={errors.password ? 'border-red-500' : ''}
@@ -216,25 +236,25 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                   </div>
 
                   <Button
-                    onClick={handleLoginSubmit}
+                    type="submit" // Added type="submit"
                     disabled={isLoading}
                     className="w-full h-12 text-lg bg-green-600 hover:bg-green-700"
                   >
-                    {isLoading ? 'Signing In...' : 'Sign In'} <ArrowRight className="ml-2 h-5 w-5" />
+                    {isLoading ? t('auth.general.signingIn') : t('auth.login.button')} <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </div>
+                </form>
               ) : (
-                <div className="space-y-6">
+                <form onSubmit={handleRegisterSubmit} className="space-y-6"> {/* Wrapped in form */}
                   {/* Registration Inputs */}
                   {/* Username */}
                   <div className="space-y-2">
-                    <Label htmlFor="registerUsername" className="text-sm font-medium">Username *</Label>
+                    <Label htmlFor="registerUsername" className="text-sm font-medium">{t('auth.fields.username')} *</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         id="registerUsername"
                         type="text"
-                        placeholder="Choose a username"
+                        placeholder={t('auth.register.placeholders.username')}
                         value={registerData.username}
                         onChange={e => handleRegisterInputChange('username', e.target.value)}
                         className={`pl-10 ${errors.username ? 'border-red-500' : ''}`}
@@ -245,11 +265,11 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <Label htmlFor="registerEmail" className="text-sm font-medium">Email *</Label>
+                    <Label htmlFor="registerEmail" className="text-sm font-medium">{t('auth.fields.email')} *</Label>
                     <Input
                       id="registerEmail"
                       type="email"
-                      placeholder="your.email@example.com"
+                      placeholder={t('auth.register.placeholders.email')}
                       value={registerData.email}
                       onChange={e => handleRegisterInputChange('email', e.target.value)}
                       className={errors.email ? 'border-red-500' : ''}
@@ -259,13 +279,13 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
                   {/* Phone */}
                   <div className="space-y-2">
-                    <Label htmlFor="registerPhone" className="text-sm font-medium">Phone Number *</Label>
+                    <Label htmlFor="registerPhone" className="text-sm font-medium">{t('auth.fields.phone')} *</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         id="registerPhone"
                         type="tel"
-                        placeholder="+91 9876543210"
+                        placeholder={t('auth.register.placeholders.phone')}
                         value={registerData.phone}
                         onChange={e => handleRegisterInputChange('phone', e.target.value)}
                         className={`pl-10 ${errors.phone ? 'border-red-500' : ''}`}
@@ -276,11 +296,11 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
                   {/* Password */}
                   <div className="space-y-2">
-                    <Label htmlFor="registerPassword" className="text-sm font-medium">Password *</Label>
+                    <Label htmlFor="registerPassword" className="text-sm font-medium">{t('auth.fields.password')} *</Label>
                     <Input
                       id="registerPassword"
                       type="password"
-                      placeholder="Create a password (min 6 characters)"
+                      placeholder={t('auth.register.placeholders.password')}
                       value={registerData.password}
                       onChange={e => handleRegisterInputChange('password', e.target.value)}
                       className={errors.password ? 'border-red-500' : ''}
@@ -290,11 +310,11 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
                   {/* Confirm Password */}
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password *</Label>
+                    <Label htmlFor="confirmPassword" className="text-sm font-medium">{t('auth.fields.confirmPassword')} *</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
-                      placeholder="Confirm your password"
+                      placeholder={t('auth.register.placeholders.confirmPassword')}
                       value={registerData.confirmPassword}
                       onChange={e => handleRegisterInputChange('confirmPassword', e.target.value)}
                       className={errors.confirmPassword ? 'border-red-500' : ''}
@@ -304,18 +324,18 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
                   {/* State Selection */}
                   <div className="space-y-2">
-                    <Label htmlFor="registerState" className="text-sm font-medium">State *</Label>
+                    <Label htmlFor="registerState" className="text-sm font-medium">{t('auth.fields.state')} *</Label>
                     <div className="relative">
                       <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
                       <Select
                         value={registerData.state}
                         onValueChange={(value) => {
                           handleRegisterInputChange('state', value);
-                          handleRegisterInputChange('city', '');
+                          handleRegisterInputChange('city', ''); // Reset city when state changes
                         }}
                       >
                         <SelectTrigger className={`pl-10 ${errors.state ? 'border-red-500' : ''}`}>
-                          <SelectValue placeholder="Select your state" />
+                          <SelectValue placeholder={t('auth.register.placeholders.state')} />
                         </SelectTrigger>
                         <SelectContent>
                           {states.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
@@ -324,8 +344,9 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                     </div>
                     {errors.state && <p className="text-sm text-red-600">{errors.state}</p>}
                   </div>
+                  {/* City Selection (from main) */}
                   <div className="space-y-2">
-                    <Label htmlFor="registerCity" className="text-sm font-medium">City *</Label>
+                    <Label htmlFor="registerCity" className="text-sm font-medium">{t('auth.fields.city')} *</Label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
                       <Select
@@ -334,10 +355,10 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                         disabled={!registerData.state}
                       >
                         <SelectTrigger className={`pl-10 ${errors.city ? 'border-red-500' : ''}`}>
-                          <SelectValue placeholder="Select your city" />
+                          <SelectValue placeholder={registerData.state ? t('auth.register.placeholders.city') : t('auth.register.placeholders.selectStateFirst')} />
                         </SelectTrigger>
                         <SelectContent>
-                          {registerData.state && cities[registerData.state].map(city => (
+                          {registerData.state && cities[registerData.state as keyof typeof cities]?.map(city => (
                             <SelectItem key={city} value={city}>{city}</SelectItem>
                           ))}
                         </SelectContent>
@@ -345,13 +366,15 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                     </div>
                     {errors.city && <p className="text-sm text-red-600">{errors.city}</p>}
                   </div>
-                {/* 
+
+                  {/* Crop Preferences (from main, uncommented) */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Crop Preferences</Label>
+                    <Label className="text-sm font-medium">{t('auth.fields.cropPreferences')}</Label>
                     <div className="flex flex-wrap gap-2">
                       {cropOptions.map(crop => (
                         <Button
                           key={crop}
+                          type="button" // Important for buttons not to trigger form submit
                           variant={registerData.crop_preferences.includes(crop) ? 'default' : 'outline'}
                           onClick={() => toggleCropPreference(crop)}
                           className="text-sm"
@@ -360,39 +383,39 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                         </Button>
                       ))}
                     </div>
-                  </div> */}
+                  </div>
 
                   <Button
-                    onClick={handleRegisterSubmit}
+                    type="submit" // Added type="submit"
                     disabled={isLoading}
                     className="w-full h-12 text-lg bg-green-600 hover:bg-green-700"
                   >
-                    {isLoading ? 'Registering...' : 'Register'} <ArrowRight className="ml-2 h-5 w-5" />
+                    {isLoading ? t('auth.general.registering') : t('auth.register.button')} <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </div>
+                </form>
               )}
 
               {/* Toggle Mode */}
               <div className="mt-6 text-center">
-                <p className="text-gray-600">{isLogin ? "Don't have an account?" : "Already have an account?"}</p>
+                <p className="text-gray-600">{isLogin ? t('auth.login.switchText') : t('auth.register.switchText')}</p>
                 <Button variant="link" onClick={toggleMode} className="text-green-600 hover:text-green-700">
-                  {isLogin ? "Sign up here" : "Sign in here"}
+                  {isLogin ? t('auth.register.link') : t('auth.login.link')}
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Info Card */}
-          <Card className="shadow-lg bg-gradient-to-br from-green-50 to-green-100">
+          {/* Info Card (from main, updated with translations) */}
+          <Card className="shadow-lg bg-gradient-to-br from-green-50 to-green-100"> {/* From main's styling */}
             <CardContent className="p-8">
-            <h3 className="text-2xl font-semibold text-foreground mb-6">
+              <h3 className="text-2xl font-semibold text-foreground mb-6">
                 {t('auth.info.title')}
               </h3>
 
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <User className="h-6 w-6 text-primary" />
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"> {/* Adjusted color to match new gradient */}
+                    <User className="h-6 w-6 text-green-600" /> {/* Adjusted color */}
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">
@@ -405,8 +428,8 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MapPin className="h-6 w-6 text-primary" />
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-6 w-6 text-green-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">
@@ -419,8 +442,8 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Building className="h-6 w-6 text-primary" />
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Building className="h-6 w-6 text-green-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-2">
@@ -433,12 +456,11 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
                 </div>
               </div>
 
-              <div className="mt-8 p-4 bg-primary/10 rounded-lg">
+              <div className="mt-8 p-4 bg-green-100 rounded-lg">
                 <p className="text-sm text-muted-foreground text-center">
                   {t('auth.info.note')}
                 </p>
               </div>
-
             </CardContent>
           </Card>
         </div>

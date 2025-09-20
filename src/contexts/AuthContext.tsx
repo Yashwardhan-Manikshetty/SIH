@@ -1,10 +1,20 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-interface User {
+export interface User {
   id: number;
   username: string;
   email: string;
   is_active: boolean;
+  state?: string;
+  city?: string;
+  phone?: string;
+  crop_preferences?: string[];
+}
+
+interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
   state?: string;
   city?: string;
   phone?: string;
@@ -21,16 +31,6 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-interface RegisterData {
-  username: string;
-  email: string;
-  password: string;
-  state?: string;
-  city?: string;
-  phone?: string;
-  crop_preferences?: string[];
-}
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
@@ -42,40 +42,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Backend base URL
   const API_URL = "http://localhost:8000";
 
-  // Load from localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem("auth_token");
     const storedUser = localStorage.getItem("auth_user");
 
     if (storedToken && storedUser) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Error parsing stored user data:", error);
+        localStorage.removeItem("auth_user");
+      }
     }
     setIsLoading(false);
   }, []);
 
-  // ---- Login ----
   const login = async (username: string, password: string) => {
     try {
-      // Validate inputs
       if (!username || !password) {
-        throw new Error("Username and password are required");
+        throw new Error("Username and password are required.");
       }
 
-      // Convert to string and trim to ensure we have valid string values
       const cleanUsername = String(username).trim();
       const cleanPassword = String(password).trim();
 
       if (!cleanUsername || !cleanPassword) {
-        throw new Error("Username and password cannot be empty");
+        throw new Error("Username and password cannot be empty.");
       }
 
       console.log('Attempting login with:', { username: cleanUsername });
 
-      // Step 1: Get JWT token using form data
       const formData = new FormData();
       formData.append('username', cleanUsername);
       formData.append('password', cleanPassword);
@@ -88,15 +87,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!loginResponse.ok) {
         const errorText = await loginResponse.text();
         let errorMessage = "Login failed";
-        
         try {
           const errorData = JSON.parse(errorText);
           errorMessage = errorData.detail || errorMessage;
         } catch {
-          // If response isn't JSON, use status text
           errorMessage = loginResponse.statusText || errorMessage;
         }
-        
         throw new Error(errorMessage);
       }
 
@@ -104,10 +100,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const accessToken = loginData.access_token;
 
       if (!accessToken) {
-        throw new Error("No access token received");
+        throw new Error("No access token received from login.");
       }
 
-      // Step 2: Fetch user profile
       const userResponse = await fetch(`${API_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -115,23 +110,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
 
       if (!userResponse.ok) {
-        throw new Error("Failed to fetch user profile");
+        throw new Error("Failed to fetch user profile after successful token retrieval.");
       }
 
       const userData: User = await userResponse.json();
 
-      // Save state
       setToken(accessToken);
       setUser(userData);
-
-      // Persist in localStorage
       localStorage.setItem("auth_token", accessToken);
       localStorage.setItem("auth_user", JSON.stringify(userData));
       
       console.log('Login successful:', userData);
     } catch (error) {
-      console.error("Login failed:", error);
-      // Clear any partial state
+      console.error("Login process failed:", error);
       setToken(null);
       setUser(null);
       localStorage.removeItem("auth_token");
@@ -140,12 +131,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // ---- Register ----
   const register = async (data: RegisterData) => {
     try {
-      // Validate required fields
       if (!data.username || !data.email || !data.password) {
-        throw new Error("Username, email, and password are required");
+        throw new Error("Username, email, and password are required for registration.");
       }
 
       const response = await fetch(`${API_URL}/register`, {
@@ -157,31 +146,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!response.ok) {
         const errorText = await response.text();
         let errorMessage = "Registration failed";
-        
         try {
           const errorData = JSON.parse(errorText);
           errorMessage = errorData.detail || errorMessage;
         } catch {
           errorMessage = response.statusText || errorMessage;
         }
-        
         throw new Error(errorMessage);
       }
 
-      // If registration succeeds, auto-login the user
       await login(data.username, data.password);
+      console.log('Registration successful, user logged in.');
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error("Registration process failed:", error);
       throw error;
     }
   };
 
-  // ---- Logout ----
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_user");
+    console.log('User logged out.');
   };
 
   const value: AuthContextType = {

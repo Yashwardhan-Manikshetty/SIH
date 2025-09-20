@@ -1,8 +1,9 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sun, Moon, Mic, Menu } from 'lucide-react';
+import { Sun, Moon, Mic, Menu, LogOut, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AgrowHeaderProps {
   showLanguageSelector?: boolean;
@@ -19,7 +20,8 @@ export const AgrowHeader = ({
   showMenu = false,
   onMenuClick
 }: AgrowHeaderProps) => {
-  const [language, setLanguage] = useState('en');
+  const { language, setLanguage, t } = useLanguage();
+  const { user, logout, isAuthenticated } = useAuth();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -47,9 +49,9 @@ export const AgrowHeader = ({
                 <span className="text-primary font-bold text-lg">A</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-primary-foreground">Agrow AI</h1>
+                <h1 className="text-xl font-bold text-primary-foreground">{t('header.title')}</h1>
                 <p className="text-xs text-primary-foreground/80 hidden sm:block">
-                  AI-powered Smart Farming for Maharashtra Farmers
+                  {t('header.subtitle')}
                 </p>
               </div>
             </div>
@@ -68,6 +70,24 @@ export const AgrowHeader = ({
                   <SelectItem value="hi">हिंदी</SelectItem>
                 </SelectContent>
               </Select>
+            )}
+
+            {isAuthenticated && user && (
+              <div className="flex items-center space-x-2 text-primary-foreground">
+                <div className="flex items-center space-x-2">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm hidden sm:block">{user.name}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={logout}
+                  className="text-primary-foreground hover:bg-primary/80"
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
             )}
 
             {showDarkMode && (
