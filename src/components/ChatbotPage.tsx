@@ -216,7 +216,7 @@ const ChatbotPage: React.FC = () => {
           <input type="file" id="imgUpload" accept="image/*" style={{ display: "none" }} onChange={handleImageUpload} />
           <button type="button" onClick={() => document.getElementById("imgUpload")?.click()}>📷</button>
           <button type="button" id="micBtn" onClick={handleMic}>🎤</button>
-          <button type="submit" id="sendBtn">😎</button>
+          <button type="submit" id="sendBtn">➤</button>
         </form>
       </section>
     </main>

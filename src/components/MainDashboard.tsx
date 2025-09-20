@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { AgrowHeader } from './AgrowHeader';
+import { UnifiedHeader } from './UnifiedHeader';
 import { 
   CloudRain, 
   Thermometer, 
@@ -21,7 +21,6 @@ import {
   Cloud,
   CloudRain as RainIcon
 } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import axios from 'axios';
 
 // IMPORTANT: make sure WeatherCard exists at ./WeatherCard (the component I shared earlier)
@@ -34,7 +33,6 @@ interface MainDashboardProps {
 }
 
 export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: MainDashboardProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [weatherData, setWeatherData] = useState<any[]>([]);
   const [loadingWeather, setLoadingWeather] = useState(true);
 
@@ -49,29 +47,6 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
     { crop: 'Cotton', disease: 'Bollworm', severity: 'Medium', action: 'Monitor closely' },
     { crop: 'Soybean', disease: 'Rust', severity: 'Low', action: 'Preventive care' }
   ];
-
-  const NavigationItems = [
-    { icon: TrendingUp, label: 'Dashboard', active: true },
-    { icon: Camera, label: 'Disease Detection', action: () => onNavigate('disease-detection') },
-    { icon: MessageSquare, label: 'AI Assistant', action: () => onNavigate('chatbot') },
-    { icon: Settings, label: 'Settings', action: () => onNavigate('settings') }
-  ];
-
-  const NavigationDrawer = () => (
-    <div className="space-y-2">
-      {NavigationItems.map((item, index) => (
-        <Button
-          key={index}
-          variant={item.active ? "secondary" : "ghost"}
-          className="w-full justify-start"
-          onClick={item.action}
-        >
-          <item.icon className="mr-3 h-4 w-4" />
-          {item.label}
-        </Button>
-      ))}
-    </div>
-  );
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
@@ -174,23 +149,13 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <AgrowHeader 
+      {/* <UnifiedHeader 
         showLanguageSelector={true}
         showVoiceAssistant={true}
         showDarkMode={true}
-        showMenu={true}
-        onMenuClick={() => setIsMenuOpen(true)}
-      />
-      
-      {/* Navigation Drawer */}
-      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <SheetContent side="left" className="w-64">
-          <div className="py-4">
-            <h2 className="text-lg font-semibold mb-4">Navigation</h2>
-            <NavigationDrawer />
-          </div>
-        </SheetContent>
-      </Sheet>
+        showMobileMenu={true}
+        variant="dashboard"
+      /> */}
 
       {/* Offline Banner */}
       <div className="bg-warning/20 border-b border-warning/30 px-4 py-2">
