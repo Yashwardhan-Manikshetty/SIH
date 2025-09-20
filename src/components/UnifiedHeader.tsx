@@ -55,17 +55,17 @@ export const UnifiedHeader = ({
 
   const navItems = [
     homeItem,
-    { path: '/disease-detection', label: 'Disease Detection', icon: Camera },
-    { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
-    { path: '/crop-prices', label: 'Market Prices', icon: TrendingUp },
   ];
 
   // Add authentication-specific items
   const authItems = isAuthenticated 
     ? [
-        { path: '/region-selection', label: 'Region', icon: MapPin },
-        { path: '/crop-selection', label: 'Crops', icon: Wheat },
-        { path: '/settings', label: 'Settings', icon: Settings },
+      { path: '/disease-detection', label: 'Disease Detection', icon: Camera },
+      { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
+      { path: '/crop-prices', label: 'Market Prices', icon: TrendingUp },
+        // { path: '/region-selection', label: 'Region', icon: MapPin },
+        // { path: '/crop-selection', label: 'Crops', icon: Wheat },
+        // { path: '/settings', label: 'Settings', icon: Settings },
       ]
     : [
         { path: '/auth', label: 'Login', icon: User },
