@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { User, Phone, MapPin, Building, ArrowRight, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { UnifiedHeader } from './UnifiedHeader';
 
 interface AuthPageProps {
   onLoginSuccess: () => void;
@@ -147,6 +148,14 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
   // --- JSX ---
   return (
+    <div>
+    <UnifiedHeader 
+    showLanguageSelector={true}
+    showVoiceAssistant={false}
+    showDarkMode={true}
+    showMobileMenu={true}
+    variant="default"
+  />
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
@@ -443,6 +452,7 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
           </Card>
         </div>
       </div>
+    </div>
     </div>
   );
 };

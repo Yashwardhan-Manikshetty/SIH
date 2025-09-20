@@ -23,8 +23,8 @@ const LandingPageRoute = () => {
     >
       <div className="min-h-screen">
         <LandingPage 
-          onGetStarted={handleGetStarted}
-          onLearnMore={handleLearnMore}
+          // onGetStarted={handleGetStarted}
+          // onLearnMore={handleLearnMore}
         />
       </div>
     </ThemeProvider>
