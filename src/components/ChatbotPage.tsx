@@ -141,7 +141,7 @@ const ChatbotPage: React.FC = () => {
               placeholder="Ask me anything about farming..."
             />
             <button type="button" id="micBtn">🎤</button>
-            <button type="submit" id="sendBtn">➤</button>
+            <button type="submit" id="micBtn">➡️</button>
           </form>
         </section>
       </main>

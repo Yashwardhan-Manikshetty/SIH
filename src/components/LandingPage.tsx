@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AgrowHeader } from './AgrowHeader';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { UnifiedHeader } from './UnifiedHeader';
 import { 
   CloudRain, 
   Leaf, 
@@ -33,7 +34,13 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <AgrowHeader />
+        <UnifiedHeader 
+          showLanguageSelector={true}
+          showVoiceAssistant={false}
+          showDarkMode={true}
+          showMobileMenu={true}
+          variant="dashboard"
+        />
         
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32 flex-grow">

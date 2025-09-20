@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+// Define the specific language types
 export type Language = 'en' | 'mr' | 'hi';
 
 interface LanguageContextType {
@@ -10,7 +11,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Translation data
+// Translation data - Merged from both branches
 const translations = {
   en: {
     // Header
@@ -103,17 +104,17 @@ const translations = {
     
     // Authentication
     'auth.login.title': 'Welcome Back',
-    'auth.login.subtitle': 'Sign in to access your personalized farming dashboard',
+    'auth.login.subtitle': 'Sign in to access your personalized farming dashboard', // Adopted from ui_changes2
     'auth.login.formTitle': 'Sign In',
     'auth.login.button': 'Sign In',
     'auth.login.switchText': 'Don\'t have an account?',
-    'auth.login.link': 'Create Account',
-    'auth.register.title': 'Join Agrow AI',
-    'auth.register.subtitle': 'Create your account to get started with smart farming',
+    'auth.login.link': 'Create Account', // Adopted from ui_changes2 for consistency with switchText
+    'auth.register.title': 'Join Agrow AI', // Adopted from ui_changes2
+    'auth.register.subtitle': 'Create your account to get started with smart farming', // Adopted from ui_changes2
     'auth.register.formTitle': 'Create Account',
     'auth.register.button': 'Create Account',
     'auth.register.switchText': 'Already have an account?',
-    'auth.register.link': 'Sign In',
+    'auth.register.link': 'Sign In', // Adopted from ui_changes2 for consistency with switchText
     'auth.fields.name': 'Full Name',
     'auth.fields.mobileNo': 'Mobile Number',
     'auth.fields.address': 'Address',
@@ -131,14 +132,18 @@ const translations = {
     'auth.errors.addressRequired': 'Address is required',
     'auth.errors.stateRequired': 'Please select your state',
     'auth.errors.districtRequired': 'Please select your district',
-    'auth.info.title': 'Why Create an Account?',
-    'auth.info.personalized.title': 'Personalized Experience',
-    'auth.info.personalized.desc': 'Get customized recommendations based on your location and farming needs',
-    'auth.info.localized.title': 'Localized Insights',
-    'auth.info.localized.desc': 'Access weather forecasts, market prices, and crop advice specific to your region',
-    'auth.info.regional.title': 'Regional Support',
-    'auth.info.regional.desc': 'Connect with local agricultural experts and farming communities',
-    'auth.info.note': 'Your information is secure and will only be used to provide better farming recommendations',
+    'auth.errors.passwordRequired': 'Password is required', // Added from main
+    'auth.errors.passwordTooShort': 'Password must be at least 6 characters', // Added from main
+    'auth.errors.confirmPasswordRequired': 'Please confirm your password', // Added from main
+    'auth.errors.passwordsDoNotMatch': 'Passwords do not match', // Added from main
+    'auth.info.title': 'Why Create an Account?', // Adopted from ui_changes2
+    'auth.info.personalized.title': 'Personalized Experience', // Adopted from ui_changes2
+    'auth.info.personalized.desc': 'Get customized recommendations based on your location and farming needs', // Adopted from ui_changes2
+    'auth.info.localized.title': 'Localized Insights', // Adopted from ui_changes2
+    'auth.info.localized.desc': 'Access weather forecasts, market prices, and crop advice specific to your region', // Adopted from ui_changes2
+    'auth.info.regional.title': 'Regional Support', // Adopted from ui_changes2
+    'auth.info.regional.desc': 'Connect with local agricultural experts and farming communities', // Adopted from ui_changes2
+    'auth.info.note': 'Your information is secure and will only be used to provide better farming recommendations', // Adopted from ui_changes2
   },
   mr: {
     // Header
@@ -259,6 +264,10 @@ const translations = {
     'auth.errors.addressRequired': 'पत्ता आवश्यक आहे',
     'auth.errors.stateRequired': 'कृपया तुमचे राज्य निवडा',
     'auth.errors.districtRequired': 'कृपया तुमचा जिल्हा निवडा',
+    'auth.errors.passwordRequired': 'पासवर्ड आवश्यक आहे', // Added from main
+    'auth.errors.passwordTooShort': 'पासवर्ड किमान 6 अक्षरे असावे', // Added from main
+    'auth.errors.confirmPasswordRequired': 'कृपया आपला पासवर्ड पुष्टी करा', // Added from main
+    'auth.errors.passwordsDoNotMatch': 'पासवर्ड जुळत नाहीत', // Added from main
     'auth.info.title': 'खाते का तयार करावे?',
     'auth.info.personalized.title': 'वैयक्तिकृत अनुभव',
     'auth.info.personalized.desc': 'तुमच्या स्थान आणि शेतीच्या गरजांवर आधारित सानुकूलित शिफारसी मिळवा',
@@ -387,6 +396,10 @@ const translations = {
     'auth.errors.addressRequired': 'पता आवश्यक है',
     'auth.errors.stateRequired': 'कृपया अपना राज्य चुनें',
     'auth.errors.districtRequired': 'कृपया अपना जिला चुनें',
+    'auth.errors.passwordRequired': 'पासवर्ड आवश्यक है', // Added from main
+    'auth.errors.passwordTooShort': 'पासवर्ड कम से कम 6 अक्षर का होना चाहिए', // Added from main
+    'auth.errors.confirmPasswordRequired': 'कृपया अपना पासवर्ड पुष्टि करें', // Added from main
+    'auth.errors.passwordsDoNotMatch': 'पासवर्ड मेल नहीं खाते', // Added from main
     'auth.info.title': 'खाता क्यों बनाएं?',
     'auth.info.personalized.title': 'व्यक्तिगत अनुभव',
     'auth.info.personalized.desc': 'अपने स्थान और खेती की जरूरतों के आधार पर अनुकूलित सुझाव प्राप्त करें',
@@ -398,12 +411,17 @@ const translations = {
   }
 };
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
   // Load language from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('agrow-language') as Language;
+    // Ensure the saved language is one of the supported types
     if (savedLanguage && ['en', 'mr', 'hi'].includes(savedLanguage)) {
       setLanguage(savedLanguage);
     }
@@ -415,18 +433,27 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [language]);
 
   const t = (key: string): string => {
-    const translation = translations[language][key as keyof typeof translations[typeof language]];
+    // Type assertion to ensure correct indexing
+    const currentLanguageTranslations = translations[language];
+    const translation = currentLanguageTranslations[key as keyof typeof currentLanguageTranslations];
+
     if (!translation) {
       console.warn(`Translation missing for key: ${key} in language: ${language}`);
-      return key;
+      return key; // Fallback to key if translation is missing
     }
     
     // Handle dynamic values like {year}
     return translation.replace('{year}', new Date().getFullYear().toString());
   };
 
+  const value: LanguageContextType = {
+    language,
+    setLanguage,
+    t
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

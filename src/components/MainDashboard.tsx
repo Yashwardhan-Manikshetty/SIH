@@ -3,14 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { AgrowHeader } from './AgrowHeader';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { 
+import { useLanguage } from '@/contexts/LanguageContext'; // Keep from ui_changes2
+import { useAuth } from '@/contexts/AuthContext'; // Keep from ui_changes2
+import { // Keep only used icons
   CloudRain, 
-  Thermometer, 
-  Droplets, 
-  Wind, 
   Leaf, 
   Shield, 
   TrendingUp, 
@@ -19,11 +15,7 @@ import {
   MessageSquare,
   Settings,
   Bell,
-  Sun,
-  Cloud,
-  CloudRain as RainIcon
 } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import axios from 'axios';
 
 // IMPORTANT: make sure WeatherCard exists at ./WeatherCard (the component I shared earlier)
@@ -36,9 +28,10 @@ interface MainDashboardProps {
 }
 
 export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: MainDashboardProps) => {
-  const { t } = useLanguage();
-  const { user } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useLanguage(); // Keep from ui_changes2
+  const { user } = useAuth(); // Keep from ui_changes2
+  // Removed `isMenuOpen` state and related `Sheet` components from `ui_changes2` as per "keep main and just keep translations"
+
   const [weatherData, setWeatherData] = useState<any[]>([]);
   const [loadingWeather, setLoadingWeather] = useState(true);
 
@@ -53,29 +46,6 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
     { crop: 'Cotton', disease: 'Bollworm', severity: 'Medium', action: 'Monitor closely' },
     { crop: 'Soybean', disease: 'Rust', severity: 'Low', action: 'Preventive care' }
   ];
-
-  const NavigationItems = [
-    { icon: TrendingUp, label: t('dashboard.quickActions.dashboard'), active: true },
-    { icon: Camera, label: t('dashboard.quickActions.disease'), action: () => onNavigate('disease-detection') },
-    { icon: MessageSquare, label: t('dashboard.quickActions.assistant'), action: () => onNavigate('chatbot') },
-    { icon: Settings, label: t('dashboard.quickActions.settings'), action: () => onNavigate('settings') }
-  ];
-
-  const NavigationDrawer = () => (
-    <div className="space-y-2">
-      {NavigationItems.map((item, index) => (
-        <Button
-          key={index}
-          variant={item.active ? "secondary" : "ghost"}
-          className="w-full justify-start"
-          onClick={item.action}
-        >
-          <item.icon className="mr-3 h-4 w-4" />
-          {item.label}
-        </Button>
-      ))}
-    </div>
-  );
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
@@ -97,9 +67,9 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
     return {
       day:
         index === 0
-          ? t('common.today')
+          ? t('common.today') // Translated
           : index === 1
-          ? t('common.tomorrow')
+          ? t('common.tomorrow') // Translated
           : new Date(dayItem.time).toLocaleDateString(undefined, { weekday: "short" }),
       dateIso: dayItem.time,
       tempAvg: v.temperatureAvg ?? null,
@@ -113,10 +83,10 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
       weatherCode: v.weatherCodeMax ?? v.weatherCodeAvg ?? null,
       description:
         (v.precipitationProbabilityAvg ?? 0) > 60
-          ? t('common.rainLikely')
+          ? t('common.rainLikely') // Translated
           : (v.cloudCoverAvg ?? 0) > 60
-          ? t('common.cloudy')
-          : t('common.clear'),
+          ? t('common.cloudy') // Translated
+          : t('common.clear'), // Translated
       unit: "metric",
       compact: false
     };
@@ -128,6 +98,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
       setLoadingWeather(true);
       try {
         const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+        // Use user?.district as fallback for selectedDistrict, as per ui_changes2
         const LOCATION = selectedDistrict || user?.district || '28.6139,77.209'; // default Delhi coords you shared
         if (!API_KEY) {
           console.warn('VITE_WEATHER_API_KEY not set in .env.local');
@@ -168,40 +139,19 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
     };
 
     fetchWeather();
-  }, []);
-
-  // today's quick metrics fallback (uses first weather card if available)
-  const todayCard = weatherData[0];
-  const displayTemp = todayCard?.tempAvg ? `${Math.round(todayCard.tempAvg)}°C` : '32°C';
-  const displayHumidity = todayCard?.humidity ? `${Math.round(todayCard.humidity)}%` : '68%';
-  const displayWind = todayCard?.windSpeed ? `${todayCard.windSpeed} km/h` : '12 km/h';
+  }, [selectedDistrict, user?.district]); // Add user?.district to dependencies
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <AgrowHeader 
-        showLanguageSelector={true}
-        showVoiceAssistant={true}
-        showDarkMode={true}
-        showMenu={true}
-        onMenuClick={() => setIsMenuOpen(true)}
-      />
-      
-      {/* Navigation Drawer */}
-      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <SheetContent side="left" className="w-64">
-        <div className="py-4">
-          <h2 className="text-lg font-semibold mb-4">{t('common.navigation')}</h2>
-          <NavigationDrawer />
-        </div>
-        </SheetContent>
-      </Sheet>
+      {/* Removed UnifiedHeader and AgrowHeader conflict block.
+          Also removed the Navigation Drawer (Sheet) from ui_changes2 */}
 
       {/* Offline Banner */}
       <div className="bg-warning/20 border-b border-warning/30 px-4 py-2">
         <div className="max-w-7xl mx-auto flex items-center justify-center">
           <AlertTriangle className="h-4 w-4 text-warning mr-2" />
           <span className="text-warning text-sm">
-            {t('dashboard.offline.banner')}
+            {t('dashboard.offline.banner')} {/* Translated */}
           </span>
         </div>
       </div>
@@ -210,10 +160,10 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
         {/* Dashboard Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            {t('dashboard.welcome')}, {user?.name || 'Farmer'}!
+            {t('dashboard.welcome')}, {user?.name || 'Farmer'}! {/* Translated + user name from ui_changes2 */}
           </h1>
           <p className="text-muted-foreground">
-            {selectedDistrict || user?.district} • {selectedCrops.length} {t('common.cropsSelected')}
+            {selectedDistrict || user?.district} • {selectedCrops.length} {t('common.cropsSelected')} {/* Translated + user district from ui_changes2 */}
           </p>
         </div>
 
@@ -222,30 +172,30 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
           <Button 
             variant="outline" 
             className="h-20 flex-col space-y-2"
-            onClick={() => onNavigate('disease-detection')}
+            onClick={() => onNavigate('disease-detection')} // Action added from ui_changes2
           >
             <Camera className="h-6 w-6" />
-            <span className="text-sm">{t('dashboard.quickActions.disease')}</span>
+            <span className="text-sm">{t('dashboard.quickActions.disease')}</span> {/* Translated */}
           </Button>
           <Button 
             variant="outline" 
             className="h-20 flex-col space-y-2"
-            onClick={() => onNavigate('chatbot')}
+            onClick={() => onNavigate('chatbot')} // Action added from ui_changes2
           >
             <MessageSquare className="h-6 w-6" />
-            <span className="text-sm">{t('dashboard.quickActions.assistant')}</span>
+            <span className="text-sm">{t('dashboard.quickActions.assistant')}</span> {/* Translated */}
           </Button>
           <Button variant="outline" className="h-20 flex-col space-y-2">
             <Bell className="h-6 w-6" />
-            <span className="text-sm">{t('dashboard.quickActions.alerts')}</span>
+            <span className="text-sm">{t('dashboard.quickActions.alerts')}</span> {/* Translated */}
           </Button>
           <Button 
             variant="outline" 
             className="h-20 flex-col space-y-2"
-            onClick={() => onNavigate('settings')}
+            onClick={() => onNavigate('settings')} // Action added from ui_changes2
           >
             <Settings className="h-6 w-6" />
-            <span className="text-sm">{t('dashboard.quickActions.settings')}</span>
+            <span className="text-sm">{t('dashboard.quickActions.settings')}</span> {/* Translated */}
           </Button>
         </div>
 
@@ -257,12 +207,12 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CloudRain className="mr-2 h-5 w-5 text-sky" />
-                {t('dashboard.weather.title')}
+                {t('dashboard.weather.title')} {/* Translated */}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {loadingWeather ? (
-                <p>{t('dashboard.weather.loading')}</p>
+                <p>{t('dashboard.weather.loading')}</p> {/* Translated */}
               ) : (
                 <div className="flex gap-2 overflow-x-auto py-2">
                   {weatherData.length > 0 ? (
@@ -272,7 +222,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-muted-foreground">{t('dashboard.weather.noData')}</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.weather.noData')}</p> {/* Translated */}
                   )}
                 </div>
               )}
@@ -284,20 +234,20 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CloudRain className="mr-2 h-5 w-5 text-success" />
-                {t('dashboard.monsoon.title')}
+                {t('dashboard.monsoon.title')} {/* Translated */}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="text-center p-4 bg-gradient-sky rounded-lg">
-                  <div className="text-2xl font-bold text-foreground mb-1">{t('dashboard.monsoon.normal')}</div>
-                  <div className="text-sm text-muted-foreground">{t('dashboard.monsoon.prediction')}</div>
+                  <div className="text-2xl font-bold text-foreground mb-1">{t('dashboard.monsoon.normal')}</div> {/* Translated */}
+                  <div className="text-sm text-muted-foreground">{t('dashboard.monsoon.prediction')}</div> {/* Translated */}
                 </div>
                 
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span>{t('dashboard.monsoon.rainfallProgress')}</span>
+                      <span>{t('dashboard.monsoon.rainfallProgress')}</span> {/* Translated */}
                       <span>75%</span>
                     </div>
                     <Progress value={75} className="h-2" />
@@ -305,7 +255,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                   
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span>{t('dashboard.monsoon.soilMoisture')}</span>
+                      <span>{t('dashboard.monsoon.soilMoisture')}</span> {/* Translated */}
                       <span>82%</span>
                     </div>
                     <Progress value={82} className="h-2" />
@@ -313,8 +263,8 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                 </div>
 
                 <div className="text-sm text-muted-foreground">
-                  <p>{t('dashboard.monsoon.expectedRainfall')}</p>
-                  <p>{t('dashboard.monsoon.bestTimeSowing')}</p>
+                  <p>{t('dashboard.monsoon.expectedRainfall')}</p> {/* Translated */}
+                  <p>{t('dashboard.monsoon.bestTimeSowing')}</p> {/* Translated */}
                 </div>
               </div>
             </CardContent>
@@ -325,7 +275,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Leaf className="mr-2 h-5 w-5 text-success" />
-                {t('dashboard.crops.title')}
+                {t('dashboard.crops.title')} {/* Translated */}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -335,11 +285,11 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                     <div className="flex justify-between items-start mb-2">
                       <div className="font-medium text-foreground">{crop.crop}</div>
                       <Badge className={getRiskColor(crop.risk)}>
-                        {t(`common.${crop.risk.toLowerCase()}`)} {t('dashboard.crops.risk')}
+                        {t(`common.${crop.risk.toLowerCase()}`)} {t('dashboard.crops.risk')} {/* Translated */}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-muted-foreground">{t('dashboard.crops.suitabilityScore')}</span>
+                      <span className="text-sm text-muted-foreground">{t('dashboard.crops.suitabilityScore')}</span> {/* Translated */}
                       <span className="font-semibold text-foreground">{crop.score}%</span>
                     </div>
                     <Progress value={crop.score} className="h-2 mb-2" />
@@ -355,7 +305,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Shield className="mr-2 h-5 w-5 text-warning" />
-                {t('dashboard.diseases.title')}
+                {t('dashboard.diseases.title')} {/* Translated */}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -368,11 +318,11 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                         <div className="text-sm text-muted-foreground">{alert.disease}</div>
                       </div>
                       <Badge className={getRiskColor(alert.severity)}>
-                        {t(`common.${alert.severity.toLowerCase()}`)}
+                        {t(`common.${alert.severity.toLowerCase()}`)} {/* Translated */}
                       </Badge>
                     </div>
                     <div className="text-xs text-muted-foreground mt-2">
-                      {t('dashboard.diseases.action')}: {alert.action}
+                      {t('dashboard.diseases.action')}: {alert.action} {/* Translated */}
                     </div>
                   </div>
                 ))}
@@ -385,7 +335,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
             <CardHeader>
               <CardTitle className="flex items-center">
                 <TrendingUp className="mr-2 h-5 w-5 text-harvest" />
-                {t('dashboard.yield.title')}
+                {t('dashboard.yield.title')} {/* Translated */}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -395,15 +345,15 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                     <div className="font-medium text-foreground mb-2">{crop}</div>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div>
-                        <div className="text-xs text-muted-foreground">{t('dashboard.yield.min')}</div>
+                        <div className="text-xs text-muted-foreground">{t('dashboard.yield.min')}</div> {/* Translated */}
                         <div className="font-semibold text-foreground">2.5t</div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted-foreground">{t('dashboard.yield.likely')}</div>
+                        <div className="text-xs text-muted-foreground">{t('dashboard.yield.likely')}</div> {/* Translated */}
                         <div className="font-semibold text-success">3.2t</div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted-foreground">{t('dashboard.yield.max')}</div>
+                        <div className="text-xs text-muted-foreground">{t('dashboard.yield.max')}</div> {/* Translated */}
                         <div className="font-semibold text-foreground">3.8t</div>
                       </div>
                     </div>
@@ -418,7 +368,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
       {/* Floating AI Assistant */}
       <Button 
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gradient-primary shadow-elevated hover:scale-105 transition-transform"
-        onClick={() => onNavigate('chatbot')}
+        onClick={() => onNavigate('chatbot')} // Action added from ui_changes2
       >
         <MessageSquare className="h-6 w-6" />
       </Button>
