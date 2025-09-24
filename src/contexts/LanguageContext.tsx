@@ -378,7 +378,7 @@ const translations = {
     'auth.register.formTitle': 'खाता बनाएं',
     'auth.register.button': 'खाता बनाएं',
     'auth.register.switchText': 'पहले से खाता है?',
-    'auth.register.link': 'साइन इन',
+    'auth.register.link': 'साइन इन करें', // Corrected
     'auth.fields.name': 'पूरा नाम',
     'auth.fields.mobileNo': 'मोबाइल नंबर',
     'auth.fields.address': 'पता',

@@ -49,7 +49,7 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
         </div>
 
         {/* Grid for 3 cards */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-1 gap-8">
           {/* District Selection Card */}
           <Card className="shadow-elevated">
             <CardContent className="p-8">
@@ -107,11 +107,10 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
           </Card>
 
           {/* Maharashtra Map Card */}
-          <Card className="shadow-elevated">
+          {/* <Card className="shadow-elevated">
             <CardContent className="p-8">
               <h2 className="text-2xl font-semibold text-foreground mb-6">{t('region.mapTitle')}</h2>
    
-              {/* Image-based Maharashtra Map */}
               <div className="aspect-square rounded-2xl overflow-hidden">
                 <img
                   src="/mapp.jpeg"   // ✅ put your second image in /public with this name
@@ -144,7 +143,7 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
                 </ul>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Crop Prices Card
           <Card className="shadow-xl border-2 border-green-300 bg-gradient-to-br from-green-100 to-green-50 hover:scale-105 transition-transform duration-300">

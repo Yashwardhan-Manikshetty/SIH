@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react'; 
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';  
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -200,7 +200,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
         </div>
 
         {/* Main Dashboard Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6">
           
           {/* Weather Forecast Card (replaced by WeatherCard row) */}
           <Card className="lg:col-span-2 shadow-card">
@@ -301,7 +301,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
           </Card>
 
           {/* Disease Risk Alerts */}
-          <Card className="shadow-card">
+          {/* <Card className="shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Shield className="mr-2 h-5 w-5 text-warning" />
@@ -328,10 +328,10 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Yield Prediction */}
-          <Card className="shadow-card">
+          {/* <Card className="shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <TrendingUp className="mr-2 h-5 w-5 text-harvest" />
@@ -361,7 +361,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </div>
 

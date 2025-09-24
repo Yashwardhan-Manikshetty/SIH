@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 // AgrowHeader from ui_changes2, assuming it's a desired global header
 import { AgrowHeader } from './AgrowHeader'; 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { UnifiedHeader } from './UnifiedHeader';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Phone, MapPin, Building, ArrowRight, LogIn, UserPlus } from 'lucide-react';
 
@@ -164,10 +165,15 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
 
   // --- JSX ---
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50"> {/* Retained main's gradient */}
-      {/* AgrowHeader from ui_changes2 branch */}
-      <AgrowHeader showLanguageSelector={true} />
-      
+    <div>
+    <UnifiedHeader 
+    showLanguageSelector={true}
+    showVoiceAssistant={false}
+    showDarkMode={true}
+    showMobileMenu={true}
+    variant="default"
+  />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -465,6 +471,7 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
           </Card>
         </div>
       </div>
+    </div>
     </div>
   );
 };

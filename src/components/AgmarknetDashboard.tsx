@@ -51,21 +51,23 @@ export default function AgmarknetDashboard() {
       setError(null);
       try {
         const url =
-          "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd00000156ada50532e9494e7b6db332a28584ed&format=json&limit=1000&&filters[state.keyword]=Maharashtra";
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const json = await response.json();
-        
-        if (json.status !== 'ok' || !json.records) {
-          throw new Error('Invalid API response');
-        }
-
-        setData(json.records);
-        setFilteredData(json.records);
+        "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd00000156ada50532e9494e7b6db332a28584ed&format=json&limit=100&&filters[state.keyword]=Maharashtra";
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const json = await response.json();
+      console.log("API records:", json.records);
+      
+      if (!json.records || !Array.isArray(json.records)) {
+        throw new Error("No records found in API response");
+      }
+      
+      setData(json.records);
+      setFilteredData(json.records);
 
         // Populate state options - ensure we get all unique states
         const uniqueStates = Array.from(new Set(
