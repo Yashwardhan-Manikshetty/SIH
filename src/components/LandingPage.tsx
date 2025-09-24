@@ -1,9 +1,7 @@
 // src/pages/LandingPage.tsx
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';+
-import { UnifiedHeader } from './UnifiedHeader'; // Assuming UnifiedHeader is in the same directory
+import { Card, CardContent } from '@/components/ui/card';
 import { AgrowHeader } from './AgrowHeader';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { UnifiedHeader } from './UnifiedHeader';
 import { 
   CloudRain, 
