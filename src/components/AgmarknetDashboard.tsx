@@ -282,6 +282,222 @@ export default function AgmarknetDashboard() {
           </Card>
         </div>
       </div>
+
+        {/* Filters */}
+        <Card className="border-0 shadow-lg bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Search className="w-5 h-5" />
+              Advanced Market Filters
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">State</label>
+                <Select value={stateFilter} onValueChange={setStateFilter}>
+                  <SelectTrigger className="h-11 border-2 focus:border-primary">
+                    <SelectValue placeholder="Select State" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {states.map((state) => (
+                      <SelectItem key={state} value={state} className="py-2">
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">District</label>
+                <Select 
+                  value={districtFilter} 
+                  onValueChange={setDistrictFilter} 
+                  disabled={!stateFilter}
+                >
+                  <SelectTrigger className="h-11 border-2 focus:border-primary">
+                    <SelectValue placeholder="Select District" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {districts.map((district) => (
+                      <SelectItem key={district} value={district} className="py-2">
+                        {district}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">Market</label>
+                <Select 
+                  value={marketFilter} 
+                  onValueChange={setMarketFilter} 
+                  disabled={!districtFilter}
+                >
+                  <SelectTrigger className="h-11 border-2 focus:border-primary">
+                    <SelectValue placeholder="Select Market" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {markets.map((market) => (
+                      <SelectItem key={market} value={market} className="py-2">
+                        {market}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">Commodity</label>
+                <Input
+                  placeholder="Search Commodity..."
+                  value={commodity}
+                  onChange={(e) => setCommodity(e.target.value)}
+                  className="h-11 border-2 focus:border-primary"
+                />
+              </div>
+            </div>
+
+            {/* Active Filters */}
+            {(stateFilter || districtFilter || marketFilter || commodity) && (
+              <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-border/50">
+                <span className="text-sm font-semibold">Active filters:</span>
+                {stateFilter && (
+                  <Badge variant="secondary" className="gap-1 px-3 py-1">
+                    State: {stateFilter}
+                  </Badge>
+                )}
+                {districtFilter && (
+                  <Badge variant="secondary" className="gap-1 px-3 py-1">
+                    District: {districtFilter}
+                  </Badge>
+                )}
+                {marketFilter && (
+                  <Badge variant="secondary" className="gap-1 px-3 py-1">
+                    Market: {marketFilter}
+                  </Badge>
+                )}
+                {commodity && (
+                  <Badge variant="secondary" className="gap-1 px-3 py-1">
+                    Commodity: {commodity}
+                  </Badge>
+                )}
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-muted-foreground hover:text-foreground underline ml-2"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Data Table */}
+        <Card className="border-0 shadow-lg bg-card/90 backdrop-blur-sm">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-agricultural-light/5">
+            <CardTitle className="flex items-center justify-between">
+              <span className="text-xl">Market Data Overview</span>
+              <Badge variant="outline" className="text-sm px-3 py-1 bg-background">
+                {filteredData.length.toLocaleString()} records found
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {loading ? (
+              <div className="p-8 space-y-4">
+                {Array.from({ length: 8 }).map((_, index) => (
+                  <div key={index} className="flex space-x-4">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[120px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gradient-to-r from-primary to-agricultural-light sticky top-0 z-10">
+                    <tr className="text-primary-foreground">
+                      <th className="px-6 py-4 text-left font-semibold">Location</th>
+                      <th className="px-6 py-4 text-left font-semibold">Commodity</th>
+                      <th className="px-6 py-4 text-left font-semibold">Variety</th>
+                      <th className="px-6 py-4 text-right font-semibold">Min Price (₹)</th>
+                      <th className="px-6 py-4 text-right font-semibold">Max Price (₹)</th>
+                      <th className="px-6 py-4 text-right font-semibold">Modal Price (₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredData.length > 0 ? (
+                      filteredData.map((item, index) => (
+                        <tr
+                          key={index}
+                          className={`border-b border-border/30 hover:bg-gradient-to-r hover:from-agricultural-green/5 hover:to-agricultural-light/5 transition-all duration-200 ${
+                            index % 2 === 0 ? "bg-background" : "bg-muted/20"
+                          }`}
+                        >
+                          <td className="px-6 py-4">
+                            <div className="flex items-start gap-3">
+                              <div className="w-8 h-8 bg-agricultural-earth/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <MapPin className="w-4 h-4 text-agricultural-earth" />
+                              </div>
+                              <div className="text-sm">
+                                <div className="font-semibold text-foreground">{item.market}</div>
+                                <div className="text-muted-foreground">
+                                  {item.district}, {item.state}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="font-semibold text-foreground">{item.commodity}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-muted-foreground text-sm bg-muted/50 px-2 py-1 rounded">
+                              {item.variety}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right font-mono text-sm">
+                            <span className="bg-red-50 text-red-700 px-2 py-1 rounded">
+                              ₹{parseFloat(item.min_price).toLocaleString()}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right font-mono text-sm">
+                            <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                              ₹{parseFloat(item.max_price).toLocaleString()}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right font-mono text-sm">
+                            <span className="bg-green-50 text-green-700 px-3 py-1 rounded font-semibold">
+                              ₹{parseFloat(item.modal_price).toLocaleString()}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-16 text-center text-muted-foreground">
+                          <div className="space-y-3">
+                            <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto">
+                              <Search className="w-8 h-8" />
+                            </div>
+                            <div className="text-lg font-medium">No data found</div>
+                            <div className="text-sm">Try adjusting your filters to see more results</div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
     </div>
   );
 }
