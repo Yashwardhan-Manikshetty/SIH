@@ -6,7 +6,11 @@ interface Message {
   text: string;
 }
 
-const ChatbotPage: React.FC = () => {
+interface ChatbotPageProps {
+  onNavigate?: (page: string) => void; // <- Added prop for navigation
+}
+
+const ChatbotPage: React.FC<ChatbotPageProps> = ({ onNavigate }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,8 +45,10 @@ const ChatbotPage: React.FC = () => {
         },
         body: JSON.stringify({
           model: "gpt-5-nano-2025-08-07",
-          messages: [ {role: "system", content: "You are a helpful agriculture assistant in india, my cuurent location is pune todays date is 19-9-25."},{ role: "user", content: text }],
-          
+          messages: [
+            { role: "system", content: "You are a helpful agriculture assistant in India, current location Pune, date 25-09-2025." },
+            { role: "user", content: text }
+          ],
         }),
       });
 
@@ -77,11 +83,14 @@ const ChatbotPage: React.FC = () => {
 
   return (
     <>
-      {/* keep your CSS here (unchanged) */}
-
       <main className="app">
         <header className="app-header">
-          <a className="back" href="#">← Back to Dashboard</a>
+          <button 
+            className="back" 
+            onClick={() => onNavigate?.('dashboard')} // <- fixed navigation
+          >
+            ← Back to Dashboard
+          </button>
           <div className="title">
             <div className="logo">🌿</div>
             <div>

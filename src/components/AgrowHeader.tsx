@@ -27,7 +27,7 @@ export const AgrowHeader = ({
   };
 
   return (
-    <header className="bg-gradient-primary border-b border-border/20 shadow-card">
+    <header className="bg-[#ECF39E] border-b border-border/20 shadow-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
@@ -47,8 +47,8 @@ export const AgrowHeader = ({
                 <span className="text-primary font-bold text-lg">A</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-primary-foreground">Agrow AI</h1>
-                <p className="text-xs text-primary-foreground/80 hidden sm:block">
+                <h1 className="text-3xl font-bold text-primary">Agrow AI</h1>
+                <p className="text-xs text-primary/80 hidden sm:block">
                   AI-powered Smart Farming for Maharashtra Farmers
                 </p>
               </div>
@@ -56,10 +56,22 @@ export const AgrowHeader = ({
           </div>
 
           {/* Right Side Controls */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-4">
+            {/* Home and Login */}
+            <div className="flex items-center space-x-3">
+              <Button variant="default" className="flex items-center space-x-2">
+                <span className="material-icons">home</span>
+                <span>Home</span>
+              </Button>
+              <Button variant="ghost" className="flex items-center space-x-2">
+                <span className="material-icons">person</span>
+                <span>Login</span>
+              </Button>
+            </div>
+
             {showLanguageSelector && (
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="w-32 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground">
+                <SelectTrigger className="w-32 bg-primary-foreground/10 border-primary-foreground/20 text-primary">
                   <SelectValue placeholder="Language" />
                 </SelectTrigger>
                 <SelectContent>
@@ -75,7 +87,7 @@ export const AgrowHeader = ({
                 variant="ghost"
                 size="icon"
                 onClick={toggleTheme}
-                className="text-primary-foreground hover:bg-primary/80"
+                className="text-primary hover:bg-primary/80"
               >
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
@@ -85,7 +97,7 @@ export const AgrowHeader = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-primary-foreground hover:bg-primary/80"
+                className="text-primary hover:bg-primary/80"
               >
                 <Mic className="h-5 w-5" />
               </Button>

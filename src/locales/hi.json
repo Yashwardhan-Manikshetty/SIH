@@ -1,0 +1,13 @@
+{
+  "welcome": "आपके फार्म डैशबोर्ड में स्वागत है",
+  "selectedCrops": "{{district}} • {{count}} फसलें चुनी गईं",
+  "diseaseDetection": "रोग पहचान",
+  "aiAssistant": "AI सहायक",
+  "alerts": "अलर्ट्स",
+  "settings": "सेटिंग्स",
+  "monsoonOutlook": "मानसून पूर्वानुमान",
+  "cropRecommendations": "फसल सिफारिशें",
+  "diseaseRiskAlerts": "रोग जोखिम अलर्ट",
+  "currentMarketPrices": "वर्तमान बाजार मूल्य",
+  "soilHealthAlert": "मृदा स्वास्थ्य अलर्ट"
+}

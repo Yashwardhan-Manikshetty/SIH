@@ -1,0 +1,13 @@
+{
+  "welcome": "Welcome to Your Farm Dashboard",
+  "selectedCrops": "{{district}} • {{count}} crops selected",
+  "diseaseDetection": "Disease Detection",
+  "aiAssistant": "AI Assistant",
+  "alerts": "Alerts",
+  "settings": "Settings",
+  "monsoonOutlook": "Monsoon Outlook",
+  "cropRecommendations": "Crop Recommendations",
+  "diseaseRiskAlerts": "Disease Risk Alerts",
+  "currentMarketPrices": "Current Market Prices",
+  "soilHealthAlert": "Soil Health Alert"
+}

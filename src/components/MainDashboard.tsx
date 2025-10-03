@@ -3,27 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { UnifiedHeader } from './UnifiedHeader';
 import { 
   CloudRain, 
-  Thermometer, 
-  Droplets, 
-  Wind, 
   Leaf, 
-  Shield, 
-  TrendingUp, 
   AlertTriangle,
   Camera,
   MessageSquare,
   Settings,
   Bell,
-  Sun,
-  Cloud,
-  CloudRain as RainIcon
+  Activity
 } from 'lucide-react';
 import axios from 'axios';
 
-// IMPORTANT: make sure WeatherCard exists at ./WeatherCard (the component I shared earlier)
+// IMPORTANT: make sure WeatherCard exists at ./WeatherCard
 import WeatherCard from './WeatherCard';
 
 interface MainDashboardProps {
@@ -43,9 +35,15 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
   ];
 
   const diseaseAlerts = [
-    { crop: 'Rice', disease: 'Blast', severity: 'High', action: 'Spray immediately' },
-    { crop: 'Cotton', disease: 'Bollworm', severity: 'Medium', action: 'Monitor closely' },
-    { crop: 'Soybean', disease: 'Rust', severity: 'Low', action: 'Preventive care' }
+    { crop: 'Rice', disease: 'Blast', risk: 'High', action: 'Spray immediately' },
+    { crop: 'Cotton', disease: 'Bollworm', risk: 'Medium', action: 'Monitor closely' },
+    { crop: 'Soybean', disease: 'Rust', risk: 'Low', action: 'Preventive care' }
+  ];
+
+  const marketPrices = [
+    { crop: 'Soybean', price: '₹4,200 / quintal', change: '+3% from last week' },
+    { crop: 'Cotton', price: '₹6,000 / quintal', change: 'Stable' },
+    { crop: 'Tur', price: '₹7,800 / quintal', change: '-2% from last week' }
   ];
 
   const getRiskColor = (risk: string) => {
@@ -57,13 +55,10 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
     }
   };
 
-  // Helper: map tomorrow.io daily item -> WeatherCard props
   const mapTomorrowDayToCard = (dayItem: any, index: number) => {
     const v = dayItem.values || {};
-
-    // wind: many providers return m/s for metric — convert to km/h (m/s * 3.6)
     const rawWind = v.windSpeedAvg ?? null;
-    const windKmH = rawWind != null ? Math.round(rawWind * 3.6 * 10) / 10 : null; // one decimal
+    const windKmH = rawWind != null ? Math.round(rawWind * 3.6 * 10) / 10 : null;
 
     return {
       day:
@@ -80,7 +75,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
       precipAccum: (v.rainAccumulationSum ?? v.rainAccumulationAvg) ?? null,
       cloudCover: v.cloudCoverAvg ?? null,
       humidity: v.humidityAvg ?? null,
-      windSpeed: windKmH, // km/h
+      windSpeed: windKmH,
       weatherCode: v.weatherCodeMax ?? v.weatherCodeAvg ?? null,
       description:
         (v.precipitationProbabilityAvg ?? 0) > 60
@@ -93,13 +88,12 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
     };
   };
 
-  // Fetch weather data from Tomorrow.io (or compatible) API
   useEffect(() => {
     const fetchWeather = async () => {
       setLoadingWeather(true);
       try {
         const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-        const LOCATION = selectedDistrict ?? '28.6139,77.209'; // default Delhi coords you shared
+        const LOCATION = selectedDistrict ?? '28.6139,77.209';
         if (!API_KEY) {
           console.warn('VITE_WEATHER_API_KEY not set in .env.local');
           setLoadingWeather(false);
@@ -121,111 +115,89 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
           apikey: API_KEY
         };
 
-        // axios will stringify arrays in params, but Tomorrow.io expects comma-separated fields — build URL manually
         const fieldsParam = params.fields.join(',');
         const url = `https://api.tomorrow.io/v4/weather/forecast?location=${encodeURIComponent(params.location)}&timesteps=${params.timesteps}&fields=${encodeURIComponent(fieldsParam)}&units=${params.units}&apikey=${encodeURIComponent(params.apikey)}`;
 
         const response = await axios.get(url);
         const daily = response.data?.timelines?.daily ?? [];
-
         const mapped = daily.slice(0, 7).map((d: any, i: number) => mapTomorrowDayToCard(d, i));
         setWeatherData(mapped);
       } catch (error) {
         console.error('Error fetching weather data:', error);
-        setWeatherData([]); // fallback
+        setWeatherData([]);
       } finally {
         setLoadingWeather(false);
       }
     };
 
     fetchWeather();
-  }, []);
-
-  // today's quick metrics fallback (uses first weather card if available)
-  const todayCard = weatherData[0];
-  const displayTemp = todayCard?.tempAvg ? `${Math.round(todayCard.tempAvg)}°C` : '32°C';
-  const displayHumidity = todayCard?.humidity ? `${Math.round(todayCard.humidity)}%` : '68%';
-  const displayWind = todayCard?.windSpeed ? `${todayCard.windSpeed} km/h` : '12 km/h';
+  }, [selectedDistrict]);
 
   return (
-    <div className="min-h-screen bg-gradient-earth">
-      {/* <UnifiedHeader 
-        showLanguageSelector={true}
-        showVoiceAssistant={true}
-        showDarkMode={true}
-        showMobileMenu={true}
-        variant="dashboard"
-      /> */}
+    <div 
+      className="min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/mainfarmbg.jpeg')" }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
 
-      {/* Offline Banner */}
-      <div className="bg-warning/20 border-b border-warning/30 px-4 py-2">
-        <div className="max-w-7xl mx-auto flex items-center justify-center">
-          <AlertTriangle className="h-4 w-4 text-warning mr-2" />
-          <span className="text-warning text-sm">
-            You are offline. Showing last saved advisories.
-          </span>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-white font-bold mb-1">
             Welcome to Your Farm Dashboard
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base md:text-lg text-white text-muted-foreground">
             {selectedDistrict} • {selectedCrops.length} crops selected
           </p>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Button 
             variant="outline" 
-            className="h-20 flex-col space-y-2"
+            className="h-16 sm:h-20 flex-col space-y-1 sm:space-y-2 text-xs sm:text-sm"
             onClick={() => onNavigate('disease-detection')}
           >
-            <Camera className="h-6 w-6" />
-            <span className="text-sm">Disease Detection</span>
+            <Camera className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span>Disease Detection</span>
           </Button>
           <Button 
             variant="outline" 
-            className="h-20 flex-col space-y-2"
+            className="h-16 sm:h-20 flex-col space-y-1 sm:space-y-2 text-xs sm:text-sm"
             onClick={() => onNavigate('chatbot')}
           >
-            <MessageSquare className="h-6 w-6" />
-            <span className="text-sm">AI Assistant</span>
+            <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span>AI Assistant</span>
           </Button>
-          <Button variant="outline" className="h-20 flex-col space-y-2">
-            <Bell className="h-6 w-6" />
-            <span className="text-sm">Alerts</span>
+          <Button variant="outline" className="h-16 sm:h-20 flex-col space-y-1 sm:space-y-2 text-xs sm:text-sm">
+            <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span>Alerts</span>
           </Button>
           <Button 
             variant="outline" 
-            className="h-20 flex-col space-y-2"
+            className="h-16 sm:h-20 flex-col space-y-1 sm:space-y-2 text-xs sm:text-sm"
             onClick={() => onNavigate('settings')}
           >
-            <Settings className="h-6 w-6" />
-            <span className="text-sm">Settings</span>
+            <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span>Settings</span>
           </Button>
         </div>
 
-        {/* Main Dashboard Grid */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          
-          {/* Weather Forecast Card (replaced by WeatherCard row) */}
-          <Card className="lg:col-span-2 shadow-card">
+        {/* Main Dashboard Grid (Responsive) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
+
+          {/* Weather Forecast Card - full width */}
+          <Card className="shadow-card col-span-1 sm:col-span-2">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <CloudRain className="mr-2 h-5 w-5 text-sky" />
+              <CardTitle className="flex items-center text-sm sm:text-base md:text-lg">
+                <CloudRain className="mr-2 h-5 w-5 sm:h-6 sm:w-6 text-sky" />
                 7-Day Weather Forecast
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="py-2 sm:py-4">
               {loadingWeather ? (
-                <p>Loading weather...</p>
+                <p className="text-sm sm:text-base">Loading weather...</p>
               ) : (
-                <div className="flex gap-2 overflow-x-auto py-2">
+                <div className="flex gap-2 sm:gap-3 overflow-x-auto py-2">
                   {weatherData.length > 0 ? (
                     weatherData.map((d, i) => (
                       <div key={d.dateIso ?? i} className="flex-shrink-0">
@@ -233,50 +205,45 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-muted-foreground">No weather data available</p>
+                    <p className="text-sm sm:text-base text-muted-foreground">No weather data available</p>
                   )}
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Seasonal Outlook Card */}
+          {/* Seasonal Outlook */}
           <Card className="shadow-card">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <CloudRain className="mr-2 h-5 w-5 text-success" />
+              <CardTitle className="flex items-center text-sm sm:text-base md:text-lg">
+                <CloudRain className="mr-2 h-5 w-5 sm:h-6 sm:w-6 text-success" />
                 Monsoon Outlook
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="text-center p-4 bg-gradient-sky rounded-lg">
-                  <div className="text-2xl font-bold text-foreground mb-1">Normal</div>
-                  <div className="text-sm text-muted-foreground">Monsoon Prediction</div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Rainfall Progress</span>
-                      <span>75%</span>
-                    </div>
-                    <Progress value={75} className="h-2" />
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="text-center p-3 sm:p-4 bg-gradient-to-r from-white-400 to-sky-500 rounded-lg">
+                <div className="text-lg sm:text-2xl font-bold text-foreground mb-1">Normal</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Monsoon Prediction</div>
+              </div>
+              <div className="space-y-2 sm:space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs sm:text-sm mb-1">
+                    <span>Rainfall Progress</span>
+                    <span>75%</span>
                   </div>
-                  
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Soil Moisture</span>
-                      <span>82%</span>
-                    </div>
-                    <Progress value={82} className="h-2" />
+                  <Progress value={75} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs sm:text-sm mb-1">
+                    <span>Soil Moisture</span>
+                    <span>82%</span>
                   </div>
+                  <Progress value={82} className="h-2" />
                 </div>
-
-                <div className="text-sm text-muted-foreground">
-                  <p>Expected rainfall: 85% of normal</p>
-                  <p>Best time for sowing: Next 2 weeks</p>
-                </div>
+              </div>
+              <div className="text-xs sm:text-sm text-muted-foreground">
+                <p>Expected rainfall: 85% of normal</p>
+                <p>Best time for sowing: Next 2 weeks</p>
               </div>
             </CardContent>
           </Card>
@@ -284,95 +251,76 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
           {/* Crop Recommendations */}
           <Card className="shadow-card">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Leaf className="mr-2 h-5 w-5 text-success" />
+              <CardTitle className="flex items-center text-sm sm:text-base md:text-lg">
+                <Leaf className="mr-2 h-5 w-5 sm:h-6 sm:w-6 text-success" />
                 Crop Recommendations
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {cropRecommendations.map((crop, index) => (
-                  <div key={index} className="border rounded-lg p-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="font-medium text-foreground">{crop.crop}</div>
-                      <Badge className={getRiskColor(crop.risk)}>
-                        {crop.risk} Risk
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-muted-foreground">Suitability Score</span>
-                      <span className="font-semibold text-foreground">{crop.score}%</span>
-                    </div>
-                    <Progress value={crop.score} className="h-2 mb-2" />
-                    <div className="text-xs text-muted-foreground">{crop.reason}</div>
+            <CardContent className="space-y-3 sm:space-y-4">
+              {cropRecommendations.map((crop, index) => (
+                <div key={index} className="border rounded-lg p-2 sm:p-3">
+                  <div className="flex justify-between items-start mb-1 sm:mb-2">
+                    <div className="font-medium text-foreground text-sm sm:text-base">{crop.crop}</div>
+                    <Badge className={getRiskColor(crop.risk)} text-sm>
+                      {crop.risk} Risk
+                    </Badge>
                   </div>
-                ))}
-              </div>
+                  <div className="flex justify-between items-center mb-1 sm:mb-2 text-xs sm:text-sm">
+                    <span>Suitability Score</span>
+                    <span className="font-semibold text-foreground">{crop.score}%</span>
+                  </div>
+                  <Progress value={crop.score} className="h-2 mb-1" />
+                  <div className="text-xs sm:text-sm text-muted-foreground">{crop.reason}</div>
+                </div>
+              ))}
             </CardContent>
           </Card>
 
           {/* Disease Risk Alerts */}
-          {/* <Card className="shadow-card">
+          <Card className="shadow-card">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Shield className="mr-2 h-5 w-5 text-warning" />
-                Diseases
+              <CardTitle className="flex items-center text-sm sm:text-base md:text-lg">
+                <AlertTriangle className="mr-2 h-5 w-5 sm:h-6 sm:w-6 text-harvest" />
+                Disease Risk Alerts
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {diseaseAlerts.map((alert, index) => (
-                  <div key={index} className="border rounded-lg p-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <div className="font-medium text-foreground">{alert.crop}</div>
-                        <div className="text-sm text-muted-foreground">{alert.disease}</div>
-                      </div>
-                      <Badge className={getRiskColor(alert.severity)}>
-                        {alert.severity}
-                      </Badge>
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-2">
-                      Action: {alert.action}
-                    </div>
+            <CardContent className="space-y-3 sm:space-y-4">
+              {diseaseAlerts.map((alert, index) => (
+                <div key={index} className="border rounded-lg p-2 sm:p-3">
+                  <div className="flex justify-between items-start mb-1 sm:mb-2">
+                    <div className="font-medium text-foreground text-sm sm:text-base">{alert.crop}</div>
+                    <Badge className={getRiskColor(alert.risk)}>
+                      {alert.risk}
+                    </Badge>
                   </div>
-                ))}
-              </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mb-1">{alert.disease}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Action: {alert.action}</div>
+                </div>
+              ))}
             </CardContent>
-          </Card> */}
+          </Card>
 
-          {/* Yield Prediction */}
-          {/* <Card className="shadow-card">
+          {/* Current Market Prices */}
+          <Card className="shadow-card">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <TrendingUp className="mr-2 h-5 w-5 text-harvest" />
-                Yield Prediction
+              <CardTitle className="flex items-center text-sm sm:text-base md:text-lg">
+                <Activity className="mr-2 h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
+                Current Market Prices
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {selectedCrops.slice(0, 3).map((crop, index) => (
-                  <div key={index} className="border rounded-lg p-3">
-                    <div className="font-medium text-foreground mb-2">{crop}</div>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div>
-                        <div className="text-xs text-muted-foreground">Min</div>
-                        <div className="font-semibold text-foreground">2.5t</div>
-                      </div>
-                      <div>
-                        <div className="text-xs text-muted-foreground">Likely</div>
-                        <div className="font-semibold text-success">3.2t</div>
-                      </div>
-                      <div>
-                        <div className="text-xs text-muted-foreground">Max</div>
-                        <div className="font-semibold text-foreground">3.8t</div>
-                      </div>
-                    </div>
+            <CardContent className="space-y-3 sm:space-y-4">
+              {marketPrices.map((mp, i) => (
+                <div key={i} className="border rounded-lg p-2 sm:p-3">
+                  <div className="flex justify-between items-start mb-1 sm:mb-2 text-sm sm:text-base">
+                    <div className="font-medium text-foreground">{mp.crop}</div>
+                    <div className="font-semibold text-foreground">{mp.price}</div>
                   </div>
-                ))}
-              </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">{mp.change}</div>
+                </div>
+              ))}
             </CardContent>
-          </Card> */}
+          </Card>
+
         </div>
       </div>
 
@@ -381,7 +329,7 @@ export const MainDashboard = ({ selectedDistrict, selectedCrops, onNavigate }: M
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gradient-primary shadow-elevated hover:scale-105 transition-transform"
         onClick={() => onNavigate('chatbot')}
       >
-        <MessageSquare className="h-6 w-6" />
+        <MessageSquare className="h-6 w-6 sm:h-7 sm:w-7" />
       </Button>
     </div>
   );

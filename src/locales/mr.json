@@ -1,0 +1,13 @@
+{
+  "welcome": "तुमच्या शेताचा डॅशबोर्ड मध्ये स्वागत आहे",
+  "selectedCrops": "{{district}} • {{count}} पीक निवडले",
+  "diseaseDetection": "रोग शोध",
+  "aiAssistant": "AI सहाय्यक",
+  "alerts": "अलर्ट",
+  "settings": "सेटिंग्ज",
+  "monsoonOutlook": "मान्सून अंदाज",
+  "cropRecommendations": "पीक शिफारसी",
+  "diseaseRiskAlerts": "रोग धोका अलर्ट",
+  "currentMarketPrices": "सध्याच्या बाजार भाव",
+  "soilHealthAlert": "माती आरोग्य अलर्ट"
+}

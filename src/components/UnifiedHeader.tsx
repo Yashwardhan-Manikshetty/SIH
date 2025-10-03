@@ -53,45 +53,28 @@ export const UnifiedHeader = ({
     ? { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }
     : { path: '/', label: 'Home', icon: Home };
 
-  const navItems = [
-    homeItem,
-  ];
+  const navItems = [homeItem];
 
-  // Add authentication-specific items
   const authItems = isAuthenticated 
     ? [
       { path: '/disease-detection', label: 'Disease Detection', icon: Camera },
       { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
       { path: '/crop-prices', label: 'Market Prices', icon: TrendingUp },
-        // { path: '/region-selection', label: 'Region', icon: MapPin },
-        // { path: '/crop-selection', label: 'Crops', icon: Wheat },
-        // { path: '/settings', label: 'Settings', icon: Settings },
-      ]
+    ]
     : [
-        { path: '/auth', label: 'Login', icon: User },
-      ];
+      { path: '/auth', label: 'Login', icon: User },
+    ];
 
-  // Mobile Navigation Drawer Component
   const MobileNavigationDrawer = () => (
     <div className="space-y-4">
-      {/* Main Navigation Items */}
-      {navItems.map((item) => {
+      {navItems.concat(authItems).map((item) => {
         const Icon = item.icon;
         const isActive = location.pathname === item.path;
-        
         return (
-          <Link 
-            key={item.path} 
-            to={item.path}
-            onClick={() => setIsMenuOpen(false)}
-          >
+          <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
             <Button
               variant={isActive ? "default" : "ghost"}
-              className={`w-full justify-start ${
-                isActive 
-                  ? "bg-green-600 text-white" 
-                  : "text-gray-600 hover:text-green-600"
-              }`}
+              className={`w-full justify-start ${isActive ? "bg-green-600 text-white" : "text-gray-600 hover:text-green-600"}`}
             >
               <Icon className="h-4 w-4 mr-3" />
               {item.label}
@@ -99,41 +82,10 @@ export const UnifiedHeader = ({
           </Link>
         );
       })}
-      
-      {/* Authentication Items */}
-      {authItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = location.pathname === item.path;
-        
-        return (
-          <Link 
-            key={item.path} 
-            to={item.path}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Button
-              variant={isActive ? "default" : "ghost"}
-              className={`w-full justify-start ${
-                isActive 
-                  ? "bg-green-600 text-white" 
-                  : "text-gray-600 hover:text-green-600"
-              }`}
-            >
-              <Icon className="h-4 w-4 mr-3" />
-              {item.label}
-            </Button>
-          </Link>
-        );
-      })}
-      
-      {/* Logout Button for Authenticated Users */}
       {isAuthenticated && (
         <Button
           variant="ghost"
-          onClick={() => {
-            logout();
-            setIsMenuOpen(false);
-          }}
+          onClick={() => { logout(); setIsMenuOpen(false); }}
           className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
         >
           <LogOut className="h-4 w-4 mr-3" />
@@ -143,14 +95,13 @@ export const UnifiedHeader = ({
     </div>
   );
 
-  // Choose styling based on variant
   const headerClasses = variant === 'dashboard' 
     ? "bg-gradient-primary border-b border-border/20 shadow-card"
-    : "bg-white border-b border-gray-200 shadow-sm";
+    : "bg-[#a7c957] border-b border-gray-200 shadow-sm"; // <-- Changed header background
 
   const logoClasses = variant === 'dashboard'
     ? "text-primary-foreground"
-    : "text-green-600";
+    : "text-green-700"; 
 
   const textClasses = variant === 'dashboard'
     ? "text-primary-foreground"
@@ -165,36 +116,24 @@ export const UnifiedHeader = ({
       <header className={headerClasses}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo and Title */}
+            {/* Logo */}
             <div className="flex items-center space-x-3">
               {showMobileMenu && (
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsMenuOpen(true)}
-                  className={`hover:bg-opacity-80 md:hidden ${
-                    variant === 'dashboard' 
-                      ? "text-primary-foreground hover:bg-primary/80" 
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                  className="hover:bg-opacity-80 text-gray-600 hover:bg-gray-200 md:hidden"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
               )}
               <div className="flex items-center space-x-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  variant === 'dashboard' 
-                    ? "bg-primary-foreground" 
-                    : "bg-green-100"
-                }`}>
-                  <span className={`font-bold text-lg ${
-                    variant === 'dashboard' 
-                      ? "text-primary" 
-                      : "text-green-600"
-                  }`}>A</span>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-green-200">
+                  <span className="font-bold text-lg text-green-700">A</span>
                 </div>
                 <div>
-                  <h1 className={`text-xl font-bold ${logoClasses}`}>AgrowAI</h1>
+                  <h1 className="text-2xl font-bold text-green-700">AgrowAI</h1> {/* <-- Made bigger */}
                   {variant === 'dashboard' && (
                     <p className={`text-xs ${subtitleClasses} hidden sm:block`}>
                       AI-powered Smart Farming for Maharashtra Farmers
@@ -205,48 +144,16 @@ export const UnifiedHeader = ({
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-1">
-              {navItems.map((item) => {
+            <div className="hidden md:flex items-center space-x-3 ml-auto">
+              {navItems.concat(authItems).map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
-                
                 return (
                   <Link key={item.path} to={item.path}>
                     <Button
                       variant={isActive ? "default" : "ghost"}
                       size="sm"
-                      className={`flex items-center space-x-2 ${
-                        isActive 
-                          ? "bg-green-600 text-white" 
-                          : variant === 'dashboard'
-                            ? "text-primary-foreground hover:text-green-400"
-                            : "text-gray-600 hover:text-green-600"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </Button>
-                  </Link>
-                );
-              })}
-              
-              {/* Authentication Items */}
-              {authItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                
-                return (
-                  <Link key={item.path} to={item.path}>
-                    <Button
-                      variant={isActive ? "default" : "ghost"}
-                      size="sm"
-                      className={`flex items-center space-x-2 ${
-                        isActive 
-                          ? "bg-green-600 text-white" 
-                          : variant === 'dashboard'
-                            ? "text-primary-foreground hover:text-green-400"
-                            : "text-gray-600 hover:text-green-600"
-                      }`}
+                      className={`flex items-center space-x-2 ${isActive ? "bg-green-600 text-white" : "text-gray-700 hover:text-green-600"}`}
                     >
                       <Icon className="h-4 w-4" />
                       <span>{item.label}</span>
@@ -256,25 +163,18 @@ export const UnifiedHeader = ({
               })}
             </div>
 
-            {/* Right Side Controls */}
+            {/* Right Controls */}
             <div className="flex items-center space-x-3">
-              {/* User Info for Authenticated Users */}
               {isAuthenticated && user && (
                 <div className="hidden lg:flex items-center space-x-2 px-3 py-1 rounded-lg bg-green-50">
                   <User className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    {user.username}
-                  </span>
+                  <span className="text-sm font-medium text-green-800">{user.username}</span>
                 </div>
               )}
 
               {showLanguageSelector && (
                 <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger className={`w-32 ${
-                    variant === 'dashboard'
-                      ? "bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground"
-                      : "bg-white border-gray-300 text-gray-900"
-                  }`}>
+                  <SelectTrigger className="w-32 bg-white border border-gray-300 text-gray-900">
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -286,47 +186,19 @@ export const UnifiedHeader = ({
               )}
 
               {showDarkMode && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleTheme}
-                  className={`hover:bg-opacity-80 ${
-                    variant === 'dashboard'
-                      ? "text-primary-foreground hover:bg-primary/80"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
+                <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-gray-600 hover:bg-gray-200">
                   {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </Button>
               )}
 
               {showVoiceAssistant && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`hover:bg-opacity-80 ${
-                    variant === 'dashboard'
-                      ? "text-primary-foreground hover:bg-primary/80"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
+                <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-200">
                   <Mic className="h-5 w-5" />
                 </Button>
               )}
 
-              {/* Logout Button for Authenticated Users */}
               {isAuthenticated && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={logout}
-                  className={`hover:bg-opacity-80 ${
-                    variant === 'dashboard'
-                      ? "text-primary-foreground hover:bg-red-500/20"
-                      : "text-red-600 hover:bg-red-50"
-                  }`}
-                  title="Logout"
-                >
+                <Button variant="ghost" size="icon" onClick={logout} className="text-red-600 hover:bg-red-50" title="Logout">
                   <LogOut className="h-5 w-5" />
                 </Button>
               )}
@@ -335,7 +207,8 @@ export const UnifiedHeader = ({
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer - Temporarily disabled due to TypeScript issues */}
+      {/* Mobile Drawer (optional) */}
+      {/* Uncomment if needed */}
       {/* {showMobileMenu && (
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetContent side="left" className="w-64">

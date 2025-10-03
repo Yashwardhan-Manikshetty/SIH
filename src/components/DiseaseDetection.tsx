@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AgrowHeader } from './AgrowHeader';
 import {
   Camera,
   Upload,
@@ -87,8 +86,6 @@ export const DiseaseDetection = ({ onNavigate }: DiseaseDetectionProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-earth">
-      <AgrowHeader showLanguageSelector showVoiceAssistant showDarkMode />
-      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center mb-8">

@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UnifiedHeader } from './UnifiedHeader';
-import { MapPin, ArrowRight, CheckCircle, Settings } from 'lucide-react';
+import { MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 import * as React from "react";
 
 interface RegionSelectionProps {
   onRegionSelected: (district: string) => void;
-  onNavigate: (path: string) => void; // added navigation prop
+  onNavigate: (path: string) => void;
 }
 
 export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectionProps) => {
@@ -26,26 +25,30 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
   };
 
   return (
-    <div className="min-h-screen bg-gradient-earth">
-      {/* <UnifiedHeader 
-        showLanguageSelector={true}
-        showVoiceAssistant={false}
-        showDarkMode={true}
-        showMobileMenu={true}
-        variant="dashboard"
-      /> */}
+    <div 
+      className="relative min-h-screen" 
+      style={{
+        backgroundImage: "url('/crop.jpeg')", 
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Page content */}
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 z-10">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4">
             Select Your Region
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-2xl mx-auto">
             Choose your district to get personalized agricultural insights and recommendations for your area.
           </p>
         </div>
 
-        {/* Grid for 3 cards */}
+        {/* Grid for cards */}
         <div className="grid lg:grid-cols-1 gap-8">
           {/* District Selection Card */}
           <Card className="shadow-elevated">
@@ -102,76 +105,16 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
               </div>
             </CardContent>
           </Card>
-
-          {/* Maharashtra Map Card */}
-          {/* <Card className="shadow-elevated">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-foreground mb-6">Maharashtra Map</h2>
-
-              <div className="aspect-square rounded-2xl overflow-hidden">
-                <img
-                  src="/mapp.jpeg"   // ✅ put your second image in /public with this name
-                  alt="Maharashtra Map"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <h3 className="text-xl font-semibold text-foreground mt-4 text-center">
-                Maharashtra
-              </h3>
-              <p className="text-muted-foreground text-center">
-                {selectedDistrict ? `Selected: ${selectedDistrict}` : 'Select your district above'}
-              </p>
-
-              <div className="mt-6 space-y-3">
-                <h3 className="font-semibold text-foreground">What you'll get:</h3>
-                <ul className="space-y-2">
-                  {[
-                    'Localized weather forecasts',
-                    'Region-specific crop recommendations',
-                    'Local disease outbreak alerts',
-                    'Market price updates'
-                  ].map((benefit, index) => (
-                    <li key={index} className="flex items-center text-sm text-muted-foreground">
-                      <CheckCircle className="h-4 w-4 text-success mr-2 flex-shrink-0" />
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </CardContent>
-          </Card> */}
-
-          {/* Crop Prices Card
-          <Card className="shadow-xl border-2 border-green-300 bg-gradient-to-br from-green-100 to-green-50 hover:scale-105 transition-transform duration-300">
-            <CardContent className="p-8 flex flex-col items-center justify-center text-center">
-              <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mb-4">
-                <Settings className="h-8 w-8 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-semibold text-foreground mb-2">Crop Prices</h2>
-              <p className="text-muted-foreground mb-4">
-                Access the latest crop prices and market trends to make informed decisions for your farm.
-              </p>
-              <Button 
-                variant="outline"
-                className="h-12 px-6"
-                onClick={() => onNavigate('crop_prices')}
-              >
-                View Prices
-              </Button>
-            </CardContent>
-          </Card>
-           */}
         </div>
 
         {/* Additional Information */}
         <div className="mt-12 text-center">
           <Card className="bg-muted/50 border-muted">
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-2">
+              <h3 className="text-lg text-white font-semibold text-foreground mb-2">
                 Why do we need your location?
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-lg text-white font-semibold text-foreground mb-2">
                 Your location helps us provide accurate weather data, suitable crop recommendations, 
                 and region-specific agricultural insights tailored to your local conditions and climate patterns.
               </p>
