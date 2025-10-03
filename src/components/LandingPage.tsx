@@ -1,13 +1,16 @@
 // src/pages/LandingPage.tsx
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';+
 import { UnifiedHeader } from './UnifiedHeader'; // Assuming UnifiedHeader is in the same directory
-import {
-  CloudRain,
-  Leaf,
-  TrendingUp,
-  Shield,
-  Smartphone,
+import { AgrowHeader } from './AgrowHeader';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { UnifiedHeader } from './UnifiedHeader';
+import { 
+  CloudRain, 
+  Leaf, 
+  TrendingUp, 
+  Shield, 
+  Smartphone, 
   Globe,
   ArrowRight
 } from 'lucide-react';
@@ -35,6 +38,9 @@ export const LandingPage = () => {
     document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => {
+  const { t } = useLanguage();
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background image */}
@@ -61,8 +67,8 @@ export const LandingPage = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-                  {t('landing.hero.titlePart1')}
-                  <span className="text-primary block">{t('landing.hero.titlePart2')}</span>
+                  {t('landing.hero.title')}
+                  <span className="text-primary block">{t('landing.hero.titleHighlight')}</span>
                 </h1>
                 <p className="text-xl text-gray-200 mb-8 max-w-2xl">
                   {t('landing.hero.subtitle')}
@@ -72,7 +78,7 @@ export const LandingPage = () => {
                     onClick={handleGetStarted}
                     className="bg-gradient-primary hover:opacity-90 text-lg px-8 py-6 rounded-lg shadow-elevated"
                   >
-                    {t('landing.hero.getStartedButton')}
+                    {t('landing.hero.getStarted')}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   <Button
@@ -80,7 +86,7 @@ export const LandingPage = () => {
                     onClick={handleLearnMore}
                     className="text-lg px-8 py-6 rounded-lg border-2 border-primary/20 hover:bg-primary/5 bg-white/10 text-white"
                   >
-                    {t('landing.hero.learnMoreButton')}
+                    {t('landing.hero.learnMore')}
                   </Button>
                 </div>
               </div>
@@ -117,33 +123,33 @@ export const LandingPage = () => {
               {[
                 {
                   icon: CloudRain,
-                  titleKey: "landing.features.weather.title",
-                  descriptionKey: "landing.features.weather.desc"
+                  title: t('landing.features.weather.title'),
+                  description: t('landing.features.weather.desc')
                 },
                 {
                   icon: Leaf,
-                  titleKey: "landing.features.cropRec.title",
-                  descriptionKey: "landing.features.cropRec.desc"
+                  title: t('landing.features.crop.title'),
+                  description: t('landing.features.crop.desc')
                 },
                 {
                   icon: Shield,
-                  titleKey: "landing.features.diseaseDet.title",
-                  descriptionKey: "landing.features.diseaseDet.desc"
+                  title: t('landing.features.disease.title'),
+                  description: t('landing.features.disease.desc')
                 },
                 {
                   icon: TrendingUp,
-                  titleKey: "landing.features.marketPrices.title",
-                  descriptionKey: "landing.features.marketPrices.desc"
+                  title: t('landing.features.market.title'),
+                  description: t('landing.features.market.desc')
                 },
                 {
                   icon: Smartphone,
-                  titleKey: "landing.features.mobileFriendly.title",
-                  descriptionKey: "landing.features.mobileFriendly.desc"
+                  title: t('landing.features.mobile.title'),
+                  description: t('landing.features.mobile.desc')
                 },
                 {
                   icon: Globe,
-                  titleKey: "landing.features.localLang.title",
-                  descriptionKey: "landing.features.localLang.desc"
+                  title: t('landing.features.language.title'),
+                  description: t('landing.features.language.desc')
                 }
               ].map((feature, index) => (
                 <Card
@@ -166,8 +172,8 @@ export const LandingPage = () => {
 
         {/* Footer Section */}
         <footer className="mt-auto py-8 bg-black/60 backdrop-blur-md text-center text-gray-300">
-          <p>{t('landing.footer.copyright', { year: new Date().getFullYear() })}</p> {/* Pass current year as an option */}
-          <p className="text-sm mt-2">{t('landing.footer.moto')}</p>
+          <p>{t('landing.footer.copyright')}</p>
+          <p className="text-sm mt-2">{t('landing.footer.tagline')}</p>
         </footer>
       </div>
     </div>

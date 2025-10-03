@@ -3,11 +3,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea'; // Merged from ui_changes2
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+// AgrowHeader from ui_changes2, assuming it's a desired global header
+import { AgrowHeader } from './AgrowHeader'; 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { UnifiedHeader } from './UnifiedHeader';
+import { User, Phone, MapPin, Building, ArrowRight } from 'lucide-react';
 
 interface AuthPageProps {
   onLoginSuccess: () => void;
@@ -15,11 +19,13 @@ interface AuthPageProps {
 
 export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
   const { t } = useLanguage();
-  const { login, register } = useAuth();
+  const { login, register } = useAuth(); // Merged: both login and register from main
   const [isLogin, setIsLogin] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // From main
 
+  // State for login form (from main)
   const [loginData, setLoginData] = useState({ username: '', password: '' });
+  // State for registration form (from main)
   const [registerData, setRegisterData] = useState({
     username: '',
     email: '',
@@ -28,19 +34,37 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     phone: '',
     state: '',
     city: ''
+    city: '', // Changed from district in ui_changes2 to city in main
+    crop_preferences: [] as string[],
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // State and city data (using main's city structure)
   const states = [
     { value: 'Punjab', label: 'Punjab' },
     { value: 'Maharashtra', label: 'Maharashtra' }
   ];
 
-  const cities = {
-    Punjab: ['Amritsar', 'Barnala', 'Bathinda', 'Faridkot', 'Fatehgarh Sahib', 'Firozpur', 'Gurdaspur', 'Hoshiarpur', 'Jalandhar', 'Kapurthala', 'Ludhiana', 'Mansa', 'Moga', 'Muktsar', 'Patiala', 'Rupnagar', 'Sangrur', 'Tarn Taran'],
-    Maharashtra: ['Ahmednagar', 'Akola', 'Amravati', 'Aurangabad', 'Beed', 'Bhandara', 'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli', 'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai Suburban', 'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 'Osmanabad', 'Palghar', 'Parbhani', 'Pune', 'Raigad', 'Ratnagiri', 'Sangli', 'Satara', 'Sindhudurg', 'Solapur', 'Thane', 'Wardha', 'Washim', 'Yavatmal']
+  const cities = { // Using main's more comprehensive city list
+    Punjab: [
+      'Amritsar', 'Barnala', 'Bathinda', 'Faridkot', 'Fatehgarh Sahib',
+      'Firozpur', 'Gurdaspur', 'Hoshiarpur', 'Jalandhar', 'Kapurthala',
+      'Ludhiana', 'Mansa', 'Moga', 'Muktsar', 'Patiala', 'Rupnagar',
+      'Sahibzada Ajit Singh Nagar', 'Sangrur', 'Tarn Taran' // Added SAS Nagar from ui_changes2 for completeness
+    ],
+    Maharashtra: [
+      'Ahmednagar', 'Akola', 'Amravati', 'Aurangabad', 'Beed', 'Bhandara',
+      'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli',
+      'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai Suburban',
+      'Nagpur', 'Nanded', 'Nandurbar', 'Nashik', 'Osmanabad', 'Palghar',
+      'Parbhani', 'Pune', 'Raigad', 'Ratnagiri', 'Sangli', 'Satara',
+      'Sindhudurg', 'Solapur', 'Thane', 'Wardha', 'Washim', 'Yavatmal'
+    ]
   };
 
+  const cropOptions = ['wheat', 'rice', 'sugarcane', 'cotton', 'maize', 'soybean', 'bajra', 'jowar', 'groundnut', 'sunflower', 'mustard', 'barley'];
+
+  // --- Input Handlers (from main) ---
   const handleLoginInputChange = (field: string, value: string) => {
     setLoginData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
@@ -51,10 +75,12 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
+
+  // --- Form Validation (from main, updated with translations) ---
   const validateLoginForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!loginData.username.trim()) newErrors.username = 'Username is required';
-    if (!loginData.password.trim()) newErrors.password = 'Password is required';
+    if (!loginData.username.trim()) newErrors.username = t('auth.login.errors.usernameRequired');
+    if (!loginData.password.trim()) newErrors.password = t('auth.login.errors.passwordRequired');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -63,17 +89,17 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     const newErrors: Record<string, string> = {};
     const { username, email, password, confirmPassword, phone, state, city } = registerData;
 
-    if (!username.trim()) newErrors.username = 'Username is required';
-    if (!email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
-    if (!password.trim()) newErrors.password = 'Password is required';
-    else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (!confirmPassword.trim()) newErrors.confirmPassword = 'Confirm password is required';
-    else if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-    if (!phone.trim()) newErrors.phone = 'Phone number is required';
-    else if (!/^\+?[\d\s-()]+$/.test(phone)) newErrors.phone = 'Phone number is invalid';
-    if (!state) newErrors.state = 'State is required';
-    if (!city) newErrors.city = 'City is required';
+    if (!username.trim()) newErrors.username = t('auth.register.errors.usernameRequired');
+    if (!email.trim()) newErrors.email = t('auth.register.errors.emailRequired');
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = t('auth.register.errors.emailInvalid');
+    if (!password.trim()) newErrors.password = t('auth.register.errors.passwordRequired');
+    else if (password.length < 6) newErrors.password = t('auth.register.errors.passwordMinLength');
+    if (!confirmPassword.trim()) newErrors.confirmPassword = t('auth.register.errors.confirmPasswordRequired');
+    else if (password !== confirmPassword) newErrors.confirmPassword = t('auth.register.errors.passwordsMismatch');
+    if (!phone.trim()) newErrors.phone = t('auth.register.errors.phoneRequired');
+    else if (!/^\+?[\d\s-()]+$/.test(phone)) newErrors.phone = t('auth.register.errors.phoneInvalid');
+    if (!state) newErrors.state = t('auth.register.errors.stateRequired');
+    if (!city) newErrors.city = t('auth.register.errors.cityRequired');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -88,7 +114,7 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
         await login(loginData.username.trim(), loginData.password.trim());
         onLoginSuccess();
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
+        const errorMessage = error instanceof Error ? error.message : t('auth.general.loginFailed');
         setErrors({ general: errorMessage });
       }
     }
@@ -112,7 +138,7 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
         await register(payload);
         onLoginSuccess();
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+        const errorMessage = error instanceof Error ? error.message : t('auth.general.registrationFailed');
         setErrors({ general: errorMessage });
       }
     }

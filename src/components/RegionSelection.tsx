@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+<<<<<<< HEAD
 import { MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+=======
+import { AgrowHeader } from './AgrowHeader';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { UnifiedHeader } from './UnifiedHeader';
+import { MapPin, ArrowRight, CheckCircle, Settings } from 'lucide-react';
+>>>>>>> 2bc2d6113345430477985d2a604accad6e811111
 import * as React from "react";
 
 interface RegionSelectionProps {
@@ -11,6 +18,7 @@ interface RegionSelectionProps {
 }
 
 export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectionProps) => {
+  const { t } = useLanguage();
   const [selectedDistrict, setSelectedDistrict] = useState('');
 
   const districts = [
@@ -40,11 +48,19 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
       {/* Page content */}
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 z-10">
         <div className="text-center mb-12">
+<<<<<<< HEAD
           <h1 className="text-4xl font-bold text-white mb-4">
             Select Your Region
           </h1>
           <p className="text-xl text-gray-200 max-w-2xl mx-auto">
             Choose your district to get personalized agricultural insights and recommendations for your area.
+=======
+          <h1 className="text-4xl font-bold text-foreground mb-4">
+            {t('region.title')}
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            {t('region.subtitle')}
+>>>>>>> 2bc2d6113345430477985d2a604accad6e811111
           </p>
         </div>
 
@@ -58,19 +74,19 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
                   <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-semibold text-foreground">Choose District</h2>
-                  <p className="text-muted-foreground">Select your district from the dropdown</p>
+                  <h2 className="text-2xl font-semibold text-foreground">{t('region.districtLabel')}</h2>
+                  <p className="text-muted-foreground">{t('region.districtPlaceholder')}</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    District
+                    {t('region.districtLabel')}
                   </label>
                   <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
                     <SelectTrigger className="w-full h-14 text-lg">
-                      <SelectValue placeholder="Select your district" />
+                      <SelectValue placeholder={t('region.districtPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
                       {districts.map((district) => (
@@ -99,12 +115,75 @@ export const RegionSelection = ({ onRegionSelected, onNavigate }: RegionSelectio
                   disabled={!selectedDistrict}
                   className="w-full h-14 text-lg bg-gradient-primary hover:opacity-90 disabled:opacity-50"
                 >
-                  Confirm Region
+                  {t('region.confirmButton')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </CardContent>
           </Card>
+<<<<<<< HEAD
+=======
+
+          {/* Maharashtra Map Card */}
+          {/* <Card className="shadow-elevated">
+            <CardContent className="p-8">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">{t('region.mapTitle')}</h2>
+   
+              <div className="aspect-square rounded-2xl overflow-hidden">
+                <img
+                  src="/mapp.jpeg"   // ✅ put your second image in /public with this name
+                  alt="Maharashtra Map"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <h3 className="text-xl font-semibold text-foreground mt-4 text-center">
+                Maharashtra
+              </h3>
+              <p className="text-muted-foreground text-center">
+                {selectedDistrict ? `${t('region.selected')}: ${selectedDistrict}` : t('region.selectDistrict')}
+              </p>
+
+              <div className="mt-6 space-y-3">
+                <h3 className="font-semibold text-foreground">{t('region.benefitsTitle')}</h3>
+                <ul className="space-y-2">
+                  {[
+                    t('region.benefit1'),
+                    t('region.benefit2'),
+                    t('region.benefit3'),
+                    t('region.benefit4')
+                  ].map((benefit, index) => (
+                    <li key={index} className="flex items-center text-sm text-muted-foreground">
+                      <CheckCircle className="h-4 w-4 text-success mr-2 flex-shrink-0" />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
+          </Card> */}
+
+          {/* Crop Prices Card
+          <Card className="shadow-xl border-2 border-green-300 bg-gradient-to-br from-green-100 to-green-50 hover:scale-105 transition-transform duration-300">
+            <CardContent className="p-8 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mb-4">
+                <Settings className="h-8 w-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">{t('region.cropPricesTitle')}</h2>
+              <p className="text-muted-foreground mb-4">
+                {t('region.cropPricesDesc')}
+              </p>
+              <Button 
+                variant="outline"
+                className="h-12 px-6"
+                onClick={() => onNavigate('crop_prices')}
+              >
+                {t('region.viewPricesButton')}
+              </Button>
+            </CardContent>
+          </Card>
+           */}
+>>>>>>> 2bc2d6113345430477985d2a604accad6e811111
         </div>
 
         {/* Additional Information */}

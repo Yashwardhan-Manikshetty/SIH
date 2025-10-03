@@ -6,10 +6,13 @@ import {MainDashboard} from '../components/MainDashboard';
 import DiseaseDetection from '../components/DiseaseDetection';
 import ChatbotPage from '../components/ChatbotPage';
 import {SettingsPage} from '../components/SettingsPage';
+import {AuthPage} from '../components/AuthPage';
 import { ThemeProvider } from '../components/ThemeProvider';
+import { useAuth } from '../contexts/AuthContext';
 import  AgmarknetDashboard  from '../components/AgmarknetDashboard';
 
 const Index = () => {
+  const { isAuthenticated, user } = useAuth();
   const [currentPage, setCurrentPage] = useState('landing');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
@@ -36,6 +39,30 @@ const Index = () => {
     // Could navigate to an about page or show more info
     console.log('Learn more clicked');
   };
+
+  const handleLoginSuccess = () => {
+    // Set district from user data if available
+    if (user?.district) {
+      setSelectedDistrict(user.district);
+    }
+    setCurrentPage('landing');
+  };
+
+  // Show auth page if user is not authenticated
+  if (!isAuthenticated) {
+    return (
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem={false}
+        disableTransitionOnChange
+      >
+        <div className="min-h-screen">
+          <AuthPage onLoginSuccess={handleLoginSuccess} />
+        </div>
+      </ThemeProvider>
+    );
+  }
 
   const renderCurrentPage = () => {
     switch (currentPage) {

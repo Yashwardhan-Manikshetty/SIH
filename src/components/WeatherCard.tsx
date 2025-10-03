@@ -9,6 +9,7 @@ import {
   Droplet,
   Thermometer,
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export type WeatherCardProps = {
   // friendly fields you can pass directly
@@ -91,6 +92,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({
   onClick,
   className = "",
 }) => {
+  const { t } = useLanguage();
   const Icon = chooseIcon({ weatherCode, precipProb, precipAccum, cloudCover, tempAvg });
 
   // readable temp formatting
@@ -100,10 +102,10 @@ const WeatherCard: React.FC<WeatherCardProps> = ({
   const ariaDesc =
     description ??
     (precipProb != null && precipProb > 50
-      ? "Likely precipitation"
+      ? t('common.rainLikely')
       : cloudCover != null && cloudCover > 50
-      ? "Cloudy"
-      : "Sunny");
+      ? t('common.cloudy')
+      : t('common.clear'));
 
   return (
     <article
@@ -125,8 +127,8 @@ const WeatherCard: React.FC<WeatherCardProps> = ({
       <div className="flex gap-2 items-center text-xs text-muted-foreground mt-1">
         {tempMin != null && tempMax != null ? (
           <div className="flex flex-col">
-            <span>Min {fmtTemp(tempMin)}</span>
-            <span>Max {fmtTemp(tempMax)}</span>
+            <span>{t('dashboard.yield.min')} {fmtTemp(tempMin)}</span>
+            <span>{t('dashboard.yield.max')} {fmtTemp(tempMax)}</span>
           </div>
         ) : null}
       </div>
