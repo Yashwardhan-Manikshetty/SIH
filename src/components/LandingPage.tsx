@@ -1,9 +1,6 @@
 // src/pages/LandingPage.tsx
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';+
-import { UnifiedHeader } from './UnifiedHeader'; // Assuming UnifiedHeader is in the same directory
-import { AgrowHeader } from './AgrowHeader';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { Card, CardContent } from '@/components/ui/card';
 import { UnifiedHeader } from './UnifiedHeader';
 import { 
   CloudRain, 
@@ -14,32 +11,54 @@ import {
   Globe,
   ArrowRight
 } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext'; // Import useLanguage
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useLanguage } from '../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
-// Remove props interface as the component will handle its own navigation
-// interface LandingPageProps {
-//   onGetStarted: () => void;
-//   onLearnMore: () => void;
-// }
-
-// Update component signature - no props needed now
 export const LandingPage = () => {
-  const { t, language, setLanguage } = useLanguage(); // Access the translation function
+  const { t } = useLanguage(); 
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // Navigate to the authentication page or region selection after getting started
     navigate('/auth');
   };
 
   const handleLearnMore = () => {
-    // Scroll to the features section for "Learn More"
     document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => {
-  const { t } = useLanguage();
+  // Features array with already translated title & description
+  const features = [
+    {
+      icon: CloudRain,
+      title: t('landing.features.weather.title'),
+      description: t('landing.features.weather.desc')
+    },
+    {
+      icon: Leaf,
+      title: t('landing.features.crop.title'),
+      description: t('landing.features.crop.desc')
+    },
+    {
+      icon: Shield,
+      title: t('landing.features.disease.title'),
+      description: t('landing.features.disease.desc')
+    },
+    {
+      icon: TrendingUp,
+      title: t('landing.features.market.title'),
+      description: t('landing.features.market.desc')
+    },
+    {
+      icon: Smartphone,
+      title: t('landing.features.mobile.title'),
+      description: t('landing.features.mobile.desc')
+    },
+    {
+      icon: Globe,
+      title: t('landing.features.language.title'),
+      description: t('landing.features.language.desc')
+    }
+  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -49,7 +68,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
         style={{ backgroundImage: "url('/farm1.jpg')" }}
       ></div>
 
-      {/* Dark overlay applied globally */}
+      {/* Dark overlay */}
       <div className="fixed inset-0 bg-black/50 z-0"></div>
 
       {/* Main content */}
@@ -59,7 +78,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
           showVoiceAssistant={false}
           showDarkMode={true}
           showMobileMenu={true}
-         />
+        />
 
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32 flex-grow">
@@ -91,13 +110,13 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
                 </div>
               </div>
 
-              {/* Hero Illustration with ONLY IoT Farming Image */}
+              {/* Hero Illustration */}
               <div className="relative">
                 <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 shadow-elevated">
                   <div className="aspect-square rounded-2xl overflow-hidden">
                     <img
                       src="/farm-iot.jpeg"
-                      alt={t('landing.hero.iotImageAlt')} // Translate alt text
+                      alt={t('landing.hero.iotImageAlt')}
                       className="w-full h-full object-cover rounded-2xl"
                     />
                   </div>
@@ -120,38 +139,7 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: CloudRain,
-                  title: t('landing.features.weather.title'),
-                  description: t('landing.features.weather.desc')
-                },
-                {
-                  icon: Leaf,
-                  title: t('landing.features.crop.title'),
-                  description: t('landing.features.crop.desc')
-                },
-                {
-                  icon: Shield,
-                  title: t('landing.features.disease.title'),
-                  description: t('landing.features.disease.desc')
-                },
-                {
-                  icon: TrendingUp,
-                  title: t('landing.features.market.title'),
-                  description: t('landing.features.market.desc')
-                },
-                {
-                  icon: Smartphone,
-                  title: t('landing.features.mobile.title'),
-                  description: t('landing.features.mobile.desc')
-                },
-                {
-                  icon: Globe,
-                  title: t('landing.features.language.title'),
-                  description: t('landing.features.language.desc')
-                }
-              ].map((feature, index) => (
+              {features.map((feature, index) => (
                 <Card
                   key={index}
                   className="hover:shadow-elevated transition-shadow duration-300"
@@ -161,8 +149,8 @@ export const LandingPage = ({ onGetStarted, onLearnMore }: LandingPageProps) => 
                     <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                       <feature.icon className="h-6 w-6 text-black" />
                     </div>
-                    <h3 className="text-xl font-semibold text-black mb-2">{t(feature.titleKey)}</h3>
-                    <p className="text-gray-800">{t(feature.descriptionKey)}</p>
+                    <h3 className="text-xl font-semibold text-black mb-2">{feature.title}</h3>
+                    <p className="text-gray-800">{feature.description}</p>
                   </CardContent>
                 </Card>
               ))}

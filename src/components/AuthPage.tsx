@@ -34,8 +34,6 @@ export const AuthPage = ({ onLoginSuccess }: AuthPageProps) => {
     phone: '',
     state: '',
     city: ''
-    city: '', // Changed from district in ui_changes2 to city in main
-    crop_preferences: [] as string[],
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 

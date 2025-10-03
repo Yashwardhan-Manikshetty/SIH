@@ -144,6 +144,27 @@ const translations = {
     'auth.info.regional.title': 'Regional Support', // Adopted from ui_changes2
     'auth.info.regional.desc': 'Connect with local agricultural experts and farming communities', // Adopted from ui_changes2
     'auth.info.note': 'Your information is secure and will only be used to provide better farming recommendations', // Adopted from ui_changes2
+    // --- NEW: Landing Page Translations ---
+    'landing.hero.titlePart1': 'Smart Farming for',
+    'landing.hero.titlePart2': 'Maharashtra',
+    'landing.hero.getStartedButton': 'Get Started',
+    'landing.hero.learnMoreButton': 'Learn More',
+    'landing.hero.iotImageAlt': 'Smart Farming IoT',
+
+    'landing.features.cropRec.title': 'Crop Recommendations',
+    'landing.features.cropRec.desc': 'AI-powered suggestions for optimal crop selection based on your region',
+    'landing.features.diseaseDet.title': 'Disease Detection',
+    'landing.features.diseaseDet.desc': 'Early identification of crop diseases with treatment recommendations',
+    'landing.features.marketPrices.title': 'Current Market Prices',
+    'landing.features.marketPrices.desc': 'Latest mandi prices for their crops across districts to make smarter selling decisions.',
+    'landing.features.mobileFriendly.title': 'Mobile Friendly',
+    'landing.features.mobileFriendly.desc': 'Access insights anywhere, even with limited internet connectivity',
+    'landing.features.localLang.title': 'Local Language Support',
+    'landing.features.localLang.desc': 'Available in Marathi, Hindi, and English for better accessibility',
+
+    'landing.footer.moto': 'Empowering Maharashtra farmers with AI-powered solutions'
+
+ 
   },
   mr: {
     // Header
