@@ -49,17 +49,26 @@ export const DiseaseDetection = ({ onNavigate }: DiseaseDetectionProps) => {
       const res = await fetch(`${API_BASE}/predict`, { method: "POST", body: formData });
       if (!res.ok) throw new Error("Detection failed");
       const data = await res.json();
+      console.log(data);
 
       setAnalysisResult({
-        disease: (data?.confidence * 100 > 50) ? (data.prediction ?? "Unknown") : "Unknown",
+        disease: data.prediction ?? "Unknown",
         confidence: Math.round(data?.confidence * 100),
-        severity: data.severity ?? "Low",
-        crop: data.crop ?? "",
-        description: data.description ?? "",
-        symptoms: data.symptoms ?? [],
-        treatment: data.treatment ?? [],
-        prevention: data.prevention ?? [],
+        severity: data.severity ?? (
+          data.confidence > 0.8 ? "High" :
+          data.confidence > 0.5 ? "Medium" : "Low"
+        ),
+        crop: data.crop || "Unknown crop",
+        description: data.description || "No description provided.",
+        symptoms: (Array.isArray(data.symptoms) ? data.symptoms : [])
+          .filter(s => typeof s === "string" && s.trim() !== ""),
+        treatment: (Array.isArray(data.treatment) ? data.treatment : [])
+          .filter(t => typeof t === "string" && t.trim() !== ""),
+        prevention: (Array.isArray(data.prevention) ? data.prevention : [])
+          .filter(p => typeof p === "string" && p.trim() !== ""),
       });
+      
+      
     } catch (err) {
       console.error(err);
       setAnalysisResult(null);
